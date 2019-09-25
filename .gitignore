@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+skynetvenv/
 build/
 develop-eggs/
 dist/

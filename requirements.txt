@@ -1,3 +1,4 @@
 pdf2image
 pytesseract
 numpy
+pdfminer.six

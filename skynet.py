@@ -14,13 +14,26 @@ def getCitiesForYear(year):
 def greyMatrixFromPath(path):
     return np.array(Image.open(path).convert("L"))
 
+MIN_ROW_HEIGHT_PX = 5
+
 def getRows(mat):
     rows = []
     row = None
     for i in range(mat.shape[0]):
         if np.mean(mat[i]) == 255:
             if row is not None:
-                rows.append(pytesseract.image_to_string(row))
+                try:
+                    row = np.vstack(
+                        (255*np.ones( (5,mat.shape[1]) ), row)
+                    )
+                    row = np.vstack(
+                        (row, 255*np.ones( (5,mat.shape[1]) ))
+                    )
+                    ocrRow = pytesseract.image_to_string(row).replace('\n', ' ')
+                    rows.append(ocrRow)
+                    print(ocrRow)
+                except Exception:
+                    print(row)
                 row = None
         else:
             if row is None:
@@ -31,6 +44,6 @@ def getRows(mat):
     return rows
 
 
-for imgPath in getDivsForYear(2016)[:1]:
+for imgPath in getDivsForYear(2016)[6:14]:
     rows = getRows(greyMatrixFromPath(imgPath))
-    print(rows)
+    #print(rows)

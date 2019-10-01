@@ -2,6 +2,7 @@ import glob
 import pytesseract
 from PIL import Image
 import numpy as np
+from matplotlib import pyplot as plt
 
 #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR'
 
@@ -29,7 +30,9 @@ def getRows(mat):
                     row = np.vstack(
                         (row, 255*np.ones( (5,mat.shape[1]) ))
                     )
-                    ocrRow = pytesseract.image_to_string(row).replace('\n', ' ')
+                    # plt.imshow(row, cmap = "gray")
+                    # plt.show()
+                    ocrRow = pytesseract.image_to_string(row, config="--psm 7 --dpi 200").replace('\n', ' ')
                     rows.append(ocrRow)
                     print(ocrRow)
                 except Exception:
@@ -44,6 +47,6 @@ def getRows(mat):
     return rows
 
 
-for imgPath in getDivsForYear(2016)[6:14]:
+for imgPath in getDivsForYear(2016):
     rows = getRows(greyMatrixFromPath(imgPath))
     #print(rows)

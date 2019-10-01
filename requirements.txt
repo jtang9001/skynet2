@@ -2,3 +2,5 @@ pdf2image
 pytesseract
 numpy
 pdfminer.six
+chardet
+matplotlib

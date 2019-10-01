@@ -1,6 +1,9 @@
 import glob
+import pytesseract
 from PIL import Image
 import numpy as np
+
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR'
 
 def getDivsForYear(year):
     return glob.glob("data/{} divs/*.png".format(year))
@@ -21,7 +24,7 @@ def getRows(mat):
             while np.mean(mat[i]) != 255:
                 rowMat = np.vstack((rowMat, mat[i]))
                 i += 1
-            rows.append(Image.fromarray(rowMat))                
+            rows.append(pytesseract.image_to_string(rowMat))                
         else:
             i += 1
     return rows
@@ -29,4 +32,4 @@ def getRows(mat):
 
 for imgPath in getDivsForYear(2016)[:1]:
     rows = getRows(greyMatrixFromPath(imgPath))
-    rows[0].show()
+    print(rows)

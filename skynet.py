@@ -21,18 +21,21 @@ def getRows(mat):
     rows = []
     row = None
     for i in range(mat.shape[0]):
-        if np.mean(mat[i]) == 255:
+        if np.mean(mat[i]) == 255.0:
             if row is not None:
                 try:
+                    if np.mean(row) < 100:
+                        row = None
+                        continue
                     row = np.vstack(
-                        (255*np.ones( (5,mat.shape[1]) ), row)
+                        (255*np.ones( (10,mat.shape[1]) ), row)
                     )
                     row = np.vstack(
-                        (row, 255*np.ones( (5,mat.shape[1]) ))
+                        (row, 255*np.ones( (10,mat.shape[1]) ))
                     )
                     # plt.imshow(row, cmap = "gray")
                     # plt.show()
-                    ocrRow = pytesseract.image_to_string(row, config="--psm 7 --dpi 200").replace('\n', ' ')
+                    ocrRow = pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ')
                     rows.append(ocrRow)
                     print(ocrRow)
                 except Exception:
@@ -47,6 +50,6 @@ def getRows(mat):
     return rows
 
 
-for imgPath in getDivsForYear(2016):
+for imgPath in getDivsForYear(2018):
     rows = getRows(greyMatrixFromPath(imgPath))
     #print(rows)

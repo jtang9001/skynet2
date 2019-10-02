@@ -4,8 +4,11 @@ from peewee import *
 import numpy as np
 import glob
 import pytesseract
+import traceback
 
-db = SqliteDatabase("results.db", pragmas = {
+YEAR = 2016
+
+db = SqliteDatabase("{}.db".format(YEAR), pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -35,13 +38,17 @@ class Event(Model):
         database = db
 
 class Result(Model):
+    rank = IntegerField()
     swimmer = ForeignKeyField(Swimmer, backref = "results")
     event = ForeignKeyField(Event, backref = "results")
+    seedtime = FloatField()
+    newtime = FloatField()
 
     class Meta:
         database = db
 
 class RelayResult(Model):
+    rank = IntegerField()
     seedtime = FloatField()
     newtime = FloatField()
 
@@ -54,7 +61,6 @@ class RelayParticipant(Model):
 
     class Meta:
         database = db
-
 
 def getDivsForYear(year):
     return glob.glob("data/{} divs/*.png".format(year))
@@ -77,6 +83,7 @@ def getRows(mat):
                         rows.append(readRow)
                         print(readRow)
                 except Exception:
+                    traceback.print_exc()
                     print(row)
                 row = None
         else:
@@ -94,9 +101,18 @@ def ocrRow(row):
     row = np.vstack(
         (row, 255*np.ones( (10,row.shape[1]) ))
     )
-    return pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ')
+    return pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ') + '\n'
 
+db.connect()
+db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
+db.close()
 
-for imgPath in getDivsForYear(2018):
+txtFile = open("{} divs.txt".format(YEAR), "w")
+
+regexStr = r"([-\d]+)[. ]+([A-Za-z \-']+), ([A-Za-z \-']+)([\d.]+) ([A-Za-z \-']+) ((\d+:)?\d{2}\.?\d{2}|NT)\s+((\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})[ .]*([a-z]*)"
+
+for imgPath in getDivsForYear(YEAR):
     rows = getRows(greyMatrixFromPath(imgPath))
-    #print(rows)
+    txtFile.writelines(rows)
+
+txtFile.close()

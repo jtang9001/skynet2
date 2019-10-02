@@ -107,11 +107,11 @@ db.connect()
 db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
 db.close()
 
-txtFile = open("{} divs.txt".format(YEAR), "w")
+txtFile = open("{} cities.txt".format(YEAR), "w")
 
 regexStr = r"([-\d]+)[. ]+([A-Za-z \-']+), ([A-Za-z \-']+)([\d.]+) ([A-Za-z \-']+) ((\d+:)?\d{2}\.?\d{2}|NT)\s+((\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})[ .]*([a-z]*)"
 
-for imgPath in getDivsForYear(YEAR):
+for imgPath in getCitiesForYear(YEAR):
     rows = getRows(greyMatrixFromPath(imgPath))
     txtFile.writelines(rows)
 

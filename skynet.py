@@ -5,7 +5,56 @@ import numpy as np
 import glob
 import pytesseract
 
-#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR'
+db = SqliteDatabase("results.db", pragmas = {
+    'foreign_keys': 1,
+    'ignore_check_constraints': 0})
+
+class School(Model):
+    name = CharField()
+
+    class Meta:
+        database = db
+
+class Swimmer(Model):
+    firstname = CharField()
+    lastname = CharField()
+    grade = IntegerField()
+    gender = CharField()
+    school = ForeignKeyField(School, backref = "swimmers")
+
+    class Meta:
+        database = db
+
+class Event(Model):
+    grade = IntegerField()
+    distance = IntegerField()
+    stroke = CharField()
+    gender = CharField()
+
+    class Meta:
+        database = db
+
+class Result(Model):
+    swimmer = ForeignKeyField(Swimmer, backref = "results")
+    event = ForeignKeyField(Event, backref = "results")
+
+    class Meta:
+        database = db
+
+class RelayResult(Model):
+    seedtime = FloatField()
+    newtime = FloatField()
+
+    class Meta:
+        database = db
+
+class RelayParticipant(Model):
+    swimmer = ForeignKeyField(Swimmer, backref = "relays")
+    relay = ForeignKeyField(RelayResult, backref = "participants")
+
+    class Meta:
+        database = db
+
 
 def getDivsForYear(year):
     return glob.glob("data/{} divs/*.png".format(year))
@@ -15,8 +64,6 @@ def getCitiesForYear(year):
 
 def greyMatrixFromPath(path):
     return np.array(Image.open(path).convert("L"))
-
-MIN_ROW_HEIGHT_PX = 5
 
 def getRows(mat):
     rows = []

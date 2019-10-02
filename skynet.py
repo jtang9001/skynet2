@@ -1,8 +1,9 @@
+from PIL import Image
+from matplotlib import pyplot as plt
+from peewee import *
+import numpy as np
 import glob
 import pytesseract
-from PIL import Image
-import numpy as np
-from matplotlib import pyplot as plt
 
 #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR'
 
@@ -24,20 +25,10 @@ def getRows(mat):
         if np.mean(mat[i]) == 255.0:
             if row is not None:
                 try:
-                    if np.mean(row) < 100:
-                        row = None
-                        continue
-                    row = np.vstack(
-                        (255*np.ones( (10,mat.shape[1]) ), row)
-                    )
-                    row = np.vstack(
-                        (row, 255*np.ones( (10,mat.shape[1]) ))
-                    )
-                    # plt.imshow(row, cmap = "gray")
-                    # plt.show()
-                    ocrRow = pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ')
-                    rows.append(ocrRow)
-                    print(ocrRow)
+                    if np.mean(row) >= 100:
+                        readRow = ocrRow(row)
+                        rows.append(readRow)
+                        print(readRow)
                 except Exception:
                     print(row)
                 row = None
@@ -48,6 +39,15 @@ def getRows(mat):
                 row = np.vstack((row, mat[i]))
 
     return rows
+
+def ocrRow(row):
+    row = np.vstack(
+        (255*np.ones( (10,row.shape[1]) ), row)
+    )
+    row = np.vstack(
+        (row, 255*np.ones( (10,row.shape[1]) ))
+    )
+    return pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ')
 
 
 for imgPath in getDivsForYear(2018):

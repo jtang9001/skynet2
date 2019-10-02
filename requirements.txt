@@ -4,3 +4,4 @@ numpy
 pdfminer.six
 chardet
 matplotlib
+peewee

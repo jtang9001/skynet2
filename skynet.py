@@ -1,7 +1,7 @@
 from peewee import *
 import re
 
-YEAR = 2017
+YEAR = 2018
 
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
@@ -84,6 +84,15 @@ divsRegexPatterns = {
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
         (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #divs time
         [ .]*(?P<qualified>[a-z]*) #qualified indicator, possibly with some OCR noise""",
+        re.VERBOSE),
+    2018: re.compile(
+        r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
+        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<age>[\d.]+)\ #age; space escaped
+        (?P<school>[A-Za-z \-'()\d.]+)\ #school name
+        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
+        (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #divs time
+        [ .]*(?P<qualified>[a-z]*) #qualified indicator, possibly with some OCR noise""",
         re.VERBOSE)
 }
 
@@ -97,6 +106,14 @@ divsEventRegexPatterns = {
         (?P<relay>\ Relay)?''',
         re.VERBOSE),
     2017: re.compile(
+        r'''Event\ \d+\ 
+        (?P<gender>Boys|Girls|Mixed)\ 
+        (?P<age>\d{2}|Open).+
+        (?P<distance>50|100|200|400).+Meter\ 
+        (?P<stroke>[A-Za-z]+)
+        (?P<relay>\ Relay)?''',
+        re.VERBOSE),
+    2018: re.compile(
         r'''Event\ \d+\ 
         (?P<gender>Boys|Girls|Mixed)\ 
         (?P<age>\d{2}|Open).+

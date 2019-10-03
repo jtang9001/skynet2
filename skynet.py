@@ -75,11 +75,28 @@ divsRegexPatterns = {
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
         (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #divs time
         [ .]*(?P<qualified>[a-z]*) #qualified indicator, possibly with some OCR noise""",
+        re.VERBOSE),
+    2017: re.compile(
+        r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
+        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<age>[\d.]+)\ #age; space escaped
+        (?P<school>[A-Za-z \-'()\d.]+)\ #school name
+        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
+        (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #divs time
+        [ .]*(?P<qualified>[a-z]*) #qualified indicator, possibly with some OCR noise""",
         re.VERBOSE)
 }
 
 divsEventRegexPatterns = {
     2016: re.compile(
+        r'''Event\ \d+\ 
+        (?P<gender>Boys|Girls|Mixed)\ 
+        (?P<age>\d{2}|Open).+
+        (?P<distance>50|100|200|400).+Meter\ 
+        (?P<stroke>[A-Za-z]+)
+        (?P<relay>\ Relay)?''',
+        re.VERBOSE),
+    2017: re.compile(
         r'''Event\ \d+\ 
         (?P<gender>Boys|Girls|Mixed)\ 
         (?P<age>\d{2}|Open).+
@@ -106,51 +123,51 @@ def noisyInt(s: str) -> int:
     return int(s)
 
 
-with open("{} divs.txt".format(YEAR), "r") as f:
-    for line in f.readlines():
-        if "Event" in line:
-            print(line)
-
-
-# db.connect()
-# db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
-
 # with open("{} divs.txt".format(YEAR), "r") as f:
-#     currentEvent = None
 #     for line in f.readlines():
-#         matchResult = divsRegexPatterns[YEAR].search(line)
-#         matchEvent = divsEventRegexPatterns[YEAR].search(line)
-#         if matchEvent:
-#             matchDict = matchEvent.groupdict()
-#             print(matchDict)
-#             currentEvent = Event.get_or_create(
-#                 gender = matchDict["gender"],
-#                 stroke = matchDict["stroke"],
-#                 year = YEAR,
-#                 isRelay = False if matchDict["relay"] is None else True,
-#                 age = noisyInt(matchDict["age"]) if matchDict["age"].isdecimal() else None,
-#                 distance = noisyInt(matchDict["distance"])
-#             )[0]
-#         elif matchResult:
-#             matchDict = matchResult.groupdict()
-#             print(matchDict)
-#             school = School.get_or_create(name = matchDict["school"])[0]
-#             swimmer = Swimmer.get_or_create(
-#                 firstName = matchDict["firstName"],
-#                 lastName = matchDict["lastName"],
-#                 defaults = {
-#                     "gender": currentEvent.gender,
-#                     "school": school
-#                 }
-#             )[0]
-#             result = Result.get_or_create(
-#                 divsRank = noisyInt(matchDict["rank"]),
-#                 swimmer = swimmer,
-#                 swimmerage = noisyInt(matchDict["age"]),
-#                 event = currentEvent,
-#                 qualified = matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
-#                 seedTime = strToTime(matchDict["seedTime"]),
-#                 divsTime = strToTime(matchDict["divsTime"]),
-#             )[0]
+#         if "Event" in line:
+#             print(line)
 
-# db.close()
+
+db.connect()
+db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
+
+with open("{} divs.txt".format(YEAR), "r") as f:
+    currentEvent = None
+    for line in f.readlines():
+        matchResult = divsRegexPatterns[YEAR].search(line)
+        matchEvent = divsEventRegexPatterns[YEAR].search(line)
+        if matchEvent:
+            matchDict = matchEvent.groupdict()
+            print(matchDict)
+            currentEvent = Event.get_or_create(
+                gender = matchDict["gender"],
+                stroke = matchDict["stroke"],
+                year = YEAR,
+                isRelay = False if matchDict["relay"] is None else True,
+                age = noisyInt(matchDict["age"]) if matchDict["age"].isdecimal() else None,
+                distance = noisyInt(matchDict["distance"])
+            )[0]
+        elif matchResult:
+            matchDict = matchResult.groupdict()
+            print(matchDict)
+            school = School.get_or_create(name = matchDict["school"])[0]
+            swimmer = Swimmer.get_or_create(
+                firstName = matchDict["firstName"],
+                lastName = matchDict["lastName"],
+                defaults = {
+                    "gender": currentEvent.gender,
+                    "school": school
+                }
+            )[0]
+            result = Result.get_or_create(
+                divsRank = noisyInt(matchDict["rank"]),
+                swimmer = swimmer,
+                swimmerage = noisyInt(matchDict["age"]),
+                event = currentEvent,
+                qualified = matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+                seedTime = strToTime(matchDict["seedTime"]),
+                divsTime = strToTime(matchDict["divsTime"]),
+            )[0]
+
+db.close()

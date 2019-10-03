@@ -6,7 +6,7 @@ import glob
 import pytesseract
 import traceback
 
-YEAR = 2015
+YEAR = 2017
 
 db = SqliteDatabase("{}.db".format(YEAR), pragmas = {
     'foreign_keys': 1,

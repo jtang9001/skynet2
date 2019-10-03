@@ -1,14 +1,9 @@
-from PIL import Image
-from matplotlib import pyplot as plt
 from peewee import *
-import numpy as np
-import glob
-import pytesseract
-import traceback
+import re
 
-YEAR = 2018
+YEAR = 2017
 
-db = SqliteDatabase("{}.db".format(YEAR), pragmas = {
+db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -19,9 +14,8 @@ class School(Model):
         database = db
 
 class Swimmer(Model):
-    firstname = CharField()
-    lastname = CharField()
-    grade = IntegerField()
+    firstName = CharField()
+    lastName = CharField()
     gender = CharField()
     school = ForeignKeyField(School, backref = "swimmers")
 
@@ -29,28 +23,38 @@ class Swimmer(Model):
         database = db
 
 class Event(Model):
-    grade = IntegerField()
+    age = IntegerField(null=True)
     distance = IntegerField()
     stroke = CharField()
     gender = CharField()
+    year = IntegerField()
+    isRelay = BooleanField()
 
     class Meta:
         database = db
 
 class Result(Model):
-    rank = IntegerField()
+    divsRank = IntegerField(null=True)
+    finalRank = IntegerField(null=True)
     swimmer = ForeignKeyField(Swimmer, backref = "results")
+    swimmerage = IntegerField(null=True)
     event = ForeignKeyField(Event, backref = "results")
-    seedtime = FloatField()
-    newtime = FloatField()
+    seedTime = FloatField(null=True)
+    divsTime = FloatField(null=True)
+    finalTime = FloatField(null=True)
+    qualified = BooleanField()
 
     class Meta:
         database = db
 
 class RelayResult(Model):
-    rank = IntegerField()
-    seedtime = FloatField()
-    newtime = FloatField()
+    divsRank = IntegerField(null=True)
+    finalRank = IntegerField(null=True)
+    event = ForeignKeyField(Event, backref = "results")
+    seedTime = FloatField(null=True)
+    divsTime = FloatField(null=True)
+    finalTime = FloatField(null=True)
+    qualified = BooleanField()
 
     class Meta:
         database = db
@@ -62,57 +66,91 @@ class RelayParticipant(Model):
     class Meta:
         database = db
 
-def getDivsForYear(year):
-    return glob.glob("data/{} divs/*.png".format(year))
+divsRegexPatterns = {
+    2016: re.compile(
+        r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
+        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<age>[\d.]+)\ #age; space escaped
+        (?P<school>[A-Za-z \-'()\d.]+)\ #school name
+        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
+        (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #divs time
+        [ .]*(?P<qualified>[a-z]*) #qualified indicator, possibly with some OCR noise""",
+        re.VERBOSE)
+}
 
-def getCitiesForYear(year):
-    return glob.glob("data/{} cities/*.png".format(year))
+divsEventRegexPatterns = {
+    2016: re.compile(
+        r'''Event\ \d+\ 
+        (?P<gender>Boys|Girls|Mixed)\ 
+        (?P<age>\d{2}|Open).+
+        (?P<distance>50|100|200|400).+Meter\ 
+        (?P<stroke>[A-Za-z]+)
+        (?P<relay>\ Relay)?''',
+        re.VERBOSE)
+}
 
-def greyMatrixFromPath(path):
-    return np.array(Image.open(path).convert("L"))
+def strToTime(s: str) -> float:
+    if ":" in s:
+        t = s.split(":")
+        return int(t[0]) * 60 + float(t[1])
+    else:
+        try:
+            assert 0 < float(s) < 60
+            return float(s)
+        except (AssertionError, ValueError):
+            print("StrToTime Warning: no time for value", s)
+            return None
 
-def getRows(mat):
-    rows = []
-    row = None
-    for i in range(mat.shape[0]):
-        if np.mean(mat[i]) == 255.0:
-            if row is not None:
-                try:
-                    if np.mean(row) >= 100:
-                        readRow = ocrRow(row)
-                        rows.append(readRow)
-                        print(readRow)
-                except Exception:
-                    traceback.print_exc()
-                    print(row)
-                row = None
-        else:
-            if row is None:
-                row = mat[i]
-            else:
-                row = np.vstack((row, mat[i]))
+def noisyInt(s: str) -> int:
+    s = ''.join(char for char in s if char.isdigit())
+    return int(s)
 
-    return rows
 
-def ocrRow(row):
-    row = np.vstack(
-        (255*np.ones( (10,row.shape[1]) ), row)
-    )
-    row = np.vstack(
-        (row, 255*np.ones( (10,row.shape[1]) ))
-    )
-    return pytesseract.image_to_string(row, config="--psm 7 --dpi 400").replace('\n', ' ') + '\n'
+with open("{} divs.txt".format(YEAR), "r") as f:
+    for line in f.readlines():
+        if "Event" in line:
+            print(line)
 
-db.connect()
-db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
-db.close()
 
-txtFile = open("{} cities.txt".format(YEAR), "w")
+# db.connect()
+# db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant])
 
-regexStr = r"([-\d]+)[. ]+([A-Za-z \-']+), ([A-Za-z \-']+)([\d.]+) ([A-Za-z \-']+) ((\d+:)?\d{2}\.?\d{2}|NT)\s+((\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})[ .]*([a-z]*)"
+# with open("{} divs.txt".format(YEAR), "r") as f:
+#     currentEvent = None
+#     for line in f.readlines():
+#         matchResult = divsRegexPatterns[YEAR].search(line)
+#         matchEvent = divsEventRegexPatterns[YEAR].search(line)
+#         if matchEvent:
+#             matchDict = matchEvent.groupdict()
+#             print(matchDict)
+#             currentEvent = Event.get_or_create(
+#                 gender = matchDict["gender"],
+#                 stroke = matchDict["stroke"],
+#                 year = YEAR,
+#                 isRelay = False if matchDict["relay"] is None else True,
+#                 age = noisyInt(matchDict["age"]) if matchDict["age"].isdecimal() else None,
+#                 distance = noisyInt(matchDict["distance"])
+#             )[0]
+#         elif matchResult:
+#             matchDict = matchResult.groupdict()
+#             print(matchDict)
+#             school = School.get_or_create(name = matchDict["school"])[0]
+#             swimmer = Swimmer.get_or_create(
+#                 firstName = matchDict["firstName"],
+#                 lastName = matchDict["lastName"],
+#                 defaults = {
+#                     "gender": currentEvent.gender,
+#                     "school": school
+#                 }
+#             )[0]
+#             result = Result.get_or_create(
+#                 divsRank = noisyInt(matchDict["rank"]),
+#                 swimmer = swimmer,
+#                 swimmerage = noisyInt(matchDict["age"]),
+#                 event = currentEvent,
+#                 qualified = matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+#                 seedTime = strToTime(matchDict["seedTime"]),
+#                 divsTime = strToTime(matchDict["divsTime"]),
+#             )[0]
 
-for imgPath in getCitiesForYear(YEAR):
-    rows = getRows(greyMatrixFromPath(imgPath))
-    txtFile.writelines(rows)
-
-txtFile.close()
+# db.close()

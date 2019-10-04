@@ -1,7 +1,7 @@
 from peewee import *
 import re
 
-YEAR = 2018
+YEAR = 2016
 
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
@@ -62,6 +62,7 @@ class RelayResult(Model):
 class RelayParticipant(Model):
     swimmer = ForeignKeyField(Swimmer, backref = "relays")
     relay = ForeignKeyField(RelayResult, backref = "participants")
+    age = IntegerField(null=True)
 
     class Meta:
         database = db
@@ -69,7 +70,7 @@ class RelayParticipant(Model):
 divsRegexPatterns = {
     2016: re.compile(
         r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
-        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
         (?P<age>[\d.]+)\ #age; space escaped
         (?P<school>[A-Za-z \-'()\d.]+)\ #school name
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
@@ -78,7 +79,7 @@ divsRegexPatterns = {
         re.VERBOSE),
     2017: re.compile(
         r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
-        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
         (?P<age>[\d.]+)\ #age; space escaped
         (?P<school>[A-Za-z \-'()\d.]+)\ #school name
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
@@ -87,7 +88,7 @@ divsRegexPatterns = {
         re.VERBOSE),
     2018: re.compile(
         r"""(?P<rank>\d+)[., ]+ #rank, followed by usually a space but also period or comma due to OCR noise
-        (?P<firstName>[A-Za-z \-']+),\ (?P<lastName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ #last name, first name; spaces are escaped due to re.VERBOSE
         (?P<age>[\d.]+)\ #age; space escaped
         (?P<school>[A-Za-z \-'()\d.]+)\ #school name
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ #seed time
@@ -152,6 +153,7 @@ db.create_tables([School, Swimmer, Event, Result, RelayResult, RelayParticipant]
 with open("{} divs.txt".format(YEAR), "r") as f:
     currentEvent = None
     for line in f.readlines():
+        print(line.strip())
         matchResult = divsRegexPatterns[YEAR].search(line)
         matchEvent = divsEventRegexPatterns[YEAR].search(line)
         if matchEvent:
@@ -164,27 +166,29 @@ with open("{} divs.txt".format(YEAR), "r") as f:
                 isRelay = False if matchDict["relay"] is None else True,
                 age = noisyInt(matchDict["age"]) if matchDict["age"].isdecimal() else None,
                 distance = noisyInt(matchDict["distance"])
-            )[0]
+            )
         elif matchResult:
             matchDict = matchResult.groupdict()
             print(matchDict)
-            school = School.get_or_create(name = matchDict["school"])[0]
+            school = School.get_or_create(name = matchDict["school"])
             swimmer = Swimmer.get_or_create(
                 firstName = matchDict["firstName"],
                 lastName = matchDict["lastName"],
                 defaults = {
-                    "gender": currentEvent.gender,
-                    "school": school
+                    "gender": currentEvent[0].gender,
+                    "school": school[0]
                 }
-            )[0]
+            )
             result = Result.get_or_create(
                 divsRank = noisyInt(matchDict["rank"]),
-                swimmer = swimmer,
-                swimmerage = noisyInt(matchDict["age"]),
-                event = currentEvent,
-                qualified = matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+                swimmer = swimmer[0],
+                event = currentEvent[0],
                 seedTime = strToTime(matchDict["seedTime"]),
                 divsTime = strToTime(matchDict["divsTime"]),
-            )[0]
+                defaults = {
+                    "swimmerage": noisyInt(matchDict["age"]),
+                    "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"]
+                }
+            )
 
 db.close()

@@ -1283,7 +1283,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM _ 14/12/2016 Page 65
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 27 Girls 15 & Under 4x50 SC Meter Medley Relay
+Event 27 Girls 15 & Under 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:22.96 2:20.10 22
@@ -1318,7 +1318,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 66
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 27 Girls 16 Year Olds 4x50 SC Meter Medley Relay
+Event 27 Girls 16 Year Olds 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:15.97 2:23.01 22
@@ -1349,7 +1349,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 67
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 27 Girls 17-19 4x50 SC Meter Medley Relay
+Event 27 Girls 17-19 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:29.80 2:09.92 22
@@ -1388,7 +1388,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 68
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 28 Boys 15 & Under 4x50 SC Meter Medley Relay
+Event 28 Boys 15 & Under 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:01.90 1:59.14 22
@@ -1411,7 +1411,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 69
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 28 Boys 16 Year Olds 4x50 SC Meter Medley Relay
+Event 28 Boys 16 Year Olds 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:07.93 2:06.36 22
@@ -1442,7 +1442,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 70
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 28 Boys 17-19 4x50 SC Meter Medley Relay
+Event 28 Boys 17-19 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Paul Kane A 1:52.84 1:51.39 22
@@ -1489,7 +1489,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 71
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 29 Girls 15 & Under 4x50 SC Meter Freestyle Relay
+Event 29 Girls 15 & Under 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:00.29 1:57.96 22
@@ -1536,7 +1536,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 72
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 29 Girls 16 Year Olds 4x50 SC Meter Freestyle Relay
+Event 29 Girls 16 Year Olds 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:07.12 2:02.56 22
@@ -1567,7 +1567,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM _ 14/12/2016 Page 73
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 29 Girls 17-19 4x50 SC Meter Freestyle Relay
+Event 29 Girls 17-19 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 2:13.15 2:04.80 22
@@ -1610,7 +1610,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 74
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 30 Boys 15 & Under 4x50 SC Meter Freestyle Relay
+Event 30 Boys 15 & Under 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 1:58.40 1:56.25 22
@@ -1643,7 +1643,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 75
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 30 Boys 16 Year Olds 4x50 SC Meter Freestyle Relay
+Event 30 Boys 16 Year Olds 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Harry Ainlay-AB C 1:50.19 1:54.37 22
@@ -1676,7 +1676,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 76
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 30 Boys 17-19 4x50 SC Meter Freestyle Relay
+Event 30 Boys 17-19 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Spruce Grove A 1:51.65 1:49.46 22
@@ -1713,7 +1713,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 77
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 31 Mixed Open 4x100 SC Meter Medley Relay
+Event 31 Mixed Open 400 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona High School A 4:30.18 4:34.77 22
@@ -2156,7 +2156,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM 14/12/2016 Page 37
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 15 Girls Open 4x100 SC Meter Freestyle Relay
+Event 15 Girls Open 400 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Salisbury Composite High Schoo A 4:20.64 4:17.05 22
@@ -2189,7 +2189,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 9:03 PM _ 14/12/2016 Page 38
 2016 Metro Edmonton HS Swim Championships - 07/12/2016 to 14/12/2016
 Results - Metro Edmonton Swimming Championships
-Event 16 Boys Open 4x100 SC Meter Freestyle Relay
+Event 16 Boys Open 400 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Paul Kane A 3:46.51 3:42.83 22

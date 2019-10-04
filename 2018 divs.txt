@@ -43,7 +43,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 45
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 27 Girls 10 & Under 4x50 SC Meter Medley Relay
+Event 27 Girls 10 & Under 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 2:19.89 q
@@ -64,7 +64,7 @@ Preliminaries
 1) Ma, Janelle 10 2) Chong, Natalie 10 3) Martinez, Misha 10 4) Leung, Yumiko 10
 9 WP Wagner A NT 4:11.60
 1) Poff, Morgan 10 2) Jain, Kanan 10 3) Mbabazi, Anchor 10 4) Englot, Sadie 10
-Event 27 Girls 11-20 4x50 SC Meter Medley Relay
+Event 27 Girls 11-20 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A 2:30.00 2:13.19 q
@@ -96,7 +96,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 46
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 27 Girls 21-30 4x50 SC Meter Medley Relay
+Event 27 Girls 21-30 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Archbishop Jordan High School B NT 2:10.52 q
@@ -134,7 +134,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 47
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 28 Boys 10 & Under 4x50 SC Meter Medley Relay
+Event 28 Boys 10 & Under 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 2:05.76 q
@@ -151,7 +151,7 @@ Preliminaries
 1) Yang, Donny 10 2) Lam, Andrew 10 3) De Roij, Noel 10 4) Wang, Qiaochu 10
 --- WP Wagner A NT NS
 1) Beck, Spencer 10 2) Humura, Alain 10 3) Rossetti, Malcolm 10 4) Sharma, Ayush 10
-Event 28 Boys 11-20 4x50 SC Meter Medley Relay
+Event 28 Boys 11-20 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 2:05.99 q
@@ -176,7 +176,7 @@ Preliminaries
 1) Farr, Tavis 20 2) Nguyen, Tyler 20 3) Reyes, Aedan 20 4) Giacobbo, Rocco 20
 --- Bev Facey High School A NT DQ
 1) Spencer, William 20 2) Spencer, Ryrie 20 3) Martin, Craig 20 4) Porcina, Ethan 20
-Event 28 Boys 21-30 4x50 SC Meter Medley Relay
+Event 28 Boys 21-30 200 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A 2:30.00 1:55.66 q
@@ -190,7 +190,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 48
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Preliminaries ... (Event 28 Boys 21-30 4x50 SC Meter Medley Relay)
+Preliminaries ... (Event 28 Boys 21-30 200 SC Meter Medley Relay)
 Team Relay Seed Time Prelim Time
 5 Strathcona High School B NT 2:15.44 q
 1) Skagestad, Paul 30 2) Skagestad, Erik 30 3) Boyer, Nathan 30 4) De Lorenzo Diez, Rodrigo 30
@@ -217,7 +217,7 @@ Team Relay Seed Time Prelim Time
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 49
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 29 Girls 10 & Under 4x50 SC Meter Freestyle Relay
+Event 29 Girls 10 & Under 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 2:11.01 q
@@ -248,7 +248,7 @@ Preliminaries
 1) Barneston, Jessica 10 2) Hopkin, Izzy 10 3) Peters, Jemila 10 4) Noddin, Angela 10
 14. W P Wagner A NT 3:46.84
 1) Poff, Morgan 10 2) Jain, Kanan 10 3) Englot, Sadie 10 4) Mbabazi, Anchor 10
-Event 29 Girls 11-20 4x50 SC Meter Freestyle Relay
+Event 29 Girls 11-20 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A 2:30.00 2:07.69 q
@@ -272,7 +272,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 50
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Preliminaries ... (Event 29 Girls 11-20 4x50 SC Meter Freestyle Relay)
+Preliminaries ... (Event 29 Girls 11-20 200 SC Meter Freestyle Relay)
 Team Relay Seed Time Prelim Time
 10 ME LaZerte High School A 4:00.00 2:51.40
 1) Napora, Abby 20 2) White, Sara 20 3) Wang, Vivian 20 4) Jameson, Kayla 20
@@ -284,7 +284,7 @@ Team Relay Seed Time Prelim Time
 --- Archbishop O'Leary A NT NS
 --- WP Wagner A NT NS
 1) MacInnis, Acadia 10 2) Purewal, Priya 20 3) Signo, Nathaly 20 4) Bhardwaj, Smriti 10
-Event 29 Girls 21-30 4x50 SC Meter Freestyle Relay
+Event 29 Girls 21-30 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A 2:30.00 2:02.49 q
@@ -324,7 +324,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 51
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 30 Boys 10 & Under 4x50 SC Meter Freestyle Relay
+Event 30 Boys 10 & Under 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 1:54.41 q
@@ -347,7 +347,7 @@ Preliminaries
 1) Wolfram, Nial 10 2) Rolinger, Conrad 10 3) Herrewynen, Daniel 10 4) Schaan, Taylor 10
 --- WP Wagner A 2:30.00 NS
 1) Beck, Spencer 10 2) Humura, Alain 10 3) Rossetti, Malcolm 10 4) Sharma, Ayush 10
-Event 30 Boys 11-20 4x50 SC Meter Freestyle Relay
+Event 30 Boys 11-20 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Archbishop Jordan High School A 2:40.00 1:44.85 q
@@ -379,13 +379,13 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 52
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Preliminaries ... (Event 30 Boys 11-20 4x50 SC Meter Freestyle Relay)
+Preliminaries ... (Event 30 Boys 11-20 200 SC Meter Freestyle Relay)
 Team Relay Seed Time Prelim Time
 --- Archbishop O'Leary B NT NS
 1) Farr, Tavis 20 2) Giacobbo, Rocco 20 3) Reyes, Aedan 20 4) House, Shane 20
 --- ME LaZerte High School B NT NS
 1) Galloway, Duncan 10 2) Nguyen, Danny 10 3) Beesoon, Harsh 20 4) Lietz, Matt 20
-Event 30 Boys 21-30 4x50 SC Meter Freestyle Relay
+Event 30 Boys 21-30 200 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A 2:30.00 1:51.17 q
@@ -427,7 +427,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 53
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 31 Mixed Open 4x100 SC Meter Medley Relay
+Event 31 Mixed Open 400 SC Meter Medley Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Ross Sheppard A NT 4:47.75 q
@@ -759,7 +759,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 23
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 15 Girls Open 4x100 SC Meter Freestyle Relay
+Event 15 Girls Open 400 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 4:18.03 q
@@ -781,7 +781,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 10:08 PM 29/11/2018 Page 24
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results
-Event 16 Boys Open 4x100 SC Meter Freestyle Relay
+Event 16 Boys Open 400 SC Meter Freestyle Relay
 Team Relay Seed Time Prelim Time
 Preliminaries
 1 Strathcona High School A NT 3:45.11 q
@@ -973,7 +973,7 @@ Results
 Preliminaries ... (Event 17 Girls 21-30 50 SC Meter Freestyle)
 Name Age Team Seed Time Prelim Time
 23 Dzhus, Andriana 30 Austin O'Brien 42.38 43.98 q
-24 Calica, Mar 30 Holy Trinity 43.22 4446 gq
+24 Calica, Mar 30 Holy Trinity 43.22 44.46 gq
 25 Suh, Skylar 30 Strathcona High School 47.00 45.17
 26 Galdamez, Lucille 30 Archbishop MacDonald 49.22 46.10
 27 Alba, Carolina 30 Strathcona High School 51.62 46.19
@@ -1043,7 +1043,7 @@ Name Age Team Seed Time Prelim Time
 Preliminaries
 1 Waples, MacKenzie 10 Paul Kane High School 35.69 35.98 q
 2 Match, Jerica 10 Ardrossan High School 38.66 37.38 q
-3 Wingnean, Kaitlyn 10 Strathcona High School 43.59 4140 q
+3 Wingnean, Kaitlyn 10 Strathcona High School 43.59 41.40 q
 4 Carr, Delaney 10 Salisbury Composite HighSchool 44.35 41.44 q
 5 Scheelar, Bailey 10 Austin O'Brien 41.15 41.65 q
 6 Zawaduk, Malina 10 Strathcona High School 46.34 43.31 q
@@ -1055,9 +1055,9 @@ Preliminaries
 12 Bambar, Maya 10 Strathcona High School 47.87 45.53 q
 13. Whitlow, Madeleine 10 Louis St Laurent School 48.50 46.23 q
 14 Coching, Anais 10 Blessed Oscar Romero 49.03 46.53 q
-15 Olsen, Lily 10 Lillian Osborne 47.22 4745 q
-16 Chen, Grace 10 Old Scona Academic 45.60 4748 q
-17 Knight, Freja 10 Archbishop Jordan High School 47.53 4955 q
+15 Olsen, Lily 10 Lillian Osborne 47.22 47.45 q
+16 Chen, Grace 10 Old Scona Academic 45.60 47.48 q
+17 Knight, Freja 10 Archbishop Jordan High School 47.53 49.55 q
 18 Deng, Angela 10 Old Scona Academic 49.78 49.98 q
 19 Monilaws, Sydney 10 Strathcona High School 52.31 50.62 q
 20 Hall, Erica 10 Salisbury Composite HighSchool 52.87 50.63 q
@@ -1116,7 +1116,7 @@ Preliminaries
 7 Johnson, Skylar 20 Strathcona High School 44.78 43.65 q
 8 Mastel-Marr, Samantha 20 Strathcona High School 44.93 43.99 q
 9 Ramage, Sadie 20 Salisbury Composite HighSchool 44.09 44.33 q
-10 Chen, Xi 20 Lillian Osborne 42.56 4440 q
+10 Chen, Xi 20 Lillian Osborne 42.56 44.40 q
 11 Pyne, Grace 20 Archbishop MacDonald 44.84 46.24 q
 12 Lei, Esther 20 Old Scona Academic 51.03 46.32 q
 13 Roote, Kelsey 20 Archbishop O'Leary 47.03 48.25 q
@@ -1160,12 +1160,12 @@ Preliminaries
 6 Swayze, Alexandra 30 Archbishop MacDonald 40.84 40.88 q
 7 Manning, Claire 30 McNally High School 43.21 42.37 q
 8 Moccia, Justine 30 Archbishop Jordan High School 40.68 42.77 q
-9 Han, Vanessa 30 ME LaZerte High School 45.05 4402 q
+9 Han, Vanessa 30 ME LaZerte High School 45.05 44.02 q
 10 Abrahart, Ashley 30 Salisbury Composite HighSchool 45.06 44.09 q
 11 Mckinnon, Natalia 30 Lillian Osborne 44.43 44.51 q
 12 Rahe, Katherine 30 Ross Sheppard 50.28 46.35 q
 13. Antoshkina, Masha 30 Edmonton Christian High School 48.12 46.98 q
-14 Janssens, Sarah 30. Lillian Osborne 44.79 4741 q
+14 Janssens, Sarah 30. Lillian Osborne 44.79 47.41 q
 15 Bastell, Lucy 30 Old Scona Academic 47.57 47.75 q
 16 Bischof, Emma 30 Lillian Osborne 51.28 49.98 q
 17 Kilfoyl, Spencer 30 Ross Sheppard 48.89 50.08 q
@@ -1200,15 +1200,15 @@ Preliminaries
 6 Cortes, Camilo 10 Strathcona High School 44.59 39.83 q
 7 Jara, Jaden 10 Austin O'Brien 42.52 42.20 q
 8 Beamish, Noah 10 Salisbury Composite HighSchool 45.19 42.44 q
-9 Lychak, Maksym 10 Archbishop Jordan High School 47.72 4415 q
+9 Lychak, Maksym 10 Archbishop Jordan High School 47.72 44.15 q
 10 Iordache, Stefan 10 Strathcona High School 46.62 44.30 q
-11 Drew, Joe 10 Bev Facey High School 44.19 4445 q
+11 Drew, Joe 10 Bev Facey High School 44.19 44.45 q
 12 Herrewynen, Daniel 10 Salisbury Composite HighSchool 47.57 45.50 q
 13 Persed, Rohan 10 Harry Ainlay 46.35 46.21 q
 14. Sharma, Ayush 10 W P Wagner 51.48 46.39 q
-15 Miguel, Tantingco 10 St Francis Xavier 52.44 A711 q
-16 Kohut, Zacka 10 Mother Margaret Mary 46.19 4913 q
-17 Tobychuk, Tytan 10 Archbishop MacDonald 48.02 4920 q
+15 Miguel, Tantingco 10 St Francis Xavier 52.44 47.11 q
+16 Kohut, Zacka 10 Mother Margaret Mary 46.19 49.13 q
+17 Tobychuk, Tytan 10 Archbishop MacDonald 48.02 49.20 q
 18 Augustin, Erich 10 Strathcona High School 49.01 49.72 q
 19 Mirante, Antonio 10 Archbishop MacDonald 54.22 50.85 q
 20 Banerjee, Aayush 10 Old Scona Academic 54.78 51.78 q
@@ -1988,7 +1988,7 @@ Preliminaries
 8 Li, Yingtu 10 Old Scona Academic 44.25 43.50 q
 9 Charrois, Jack 10 Mother Margaret Mary 48.35 46.36 q
 10 Arnold, Ryker 10 McNally High School 52.28 47.12 q
-11 Kwang, Kaiser 10 Harry Ainlay 48.94 4714 q
+11 Kwang, Kaiser 10 Harry Ainlay 48.94 47.14 q
 12 Wolfram, Nial 10 Salisbury Composite HighSchool 49.67 47.38 q
 13. Nguyen, Aaron 10 Archbishop MacDonald 51.00 47.90 q
 14 Quach, The 10 Archbishop MacDonald 52.15 48.23 q
@@ -2050,7 +2050,7 @@ Preliminaries
 12 Stenlund, Magnus 30 Salisbury Composite HighSchool 45.92 44.57 q
 13. Marshall, Drew 30 Lillian Osborne 45.50 45.66 q
 14 Negreanu, Lucian 30 Strathcona High School 48.96 46.94 q
-15 Brown, Terique 30 Blessed Oscar Romero 49.12 4749 q
+15 Brown, Terique 30 Blessed Oscar Romero 49.12 47.49 q
 16 Lemieux, Kristopher 30 Harry Ainlay 57.71 51.77 q
 17. Fetter, Josh 30 St Francis Xavier 55.34 55.60
 --- Stoyanov, Ivan 30 St Francis Xavier 1:04.19 DQ

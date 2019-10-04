@@ -1,7 +1,7 @@
 from peewee import *
 import re
 
-YEAR = 2016
+YEAR = 2018
 
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
@@ -27,7 +27,6 @@ class Event(Model):
     distance = IntegerField()
     stroke = CharField()
     gender = CharField()
-    year = IntegerField()
     isRelay = BooleanField()
 
     class Meta:
@@ -43,6 +42,7 @@ class Result(Model):
     divsTime = FloatField(null=True)
     finalTime = FloatField(null=True)
     qualified = BooleanField()
+    year = IntegerField()
 
     class Meta:
         database = db
@@ -55,6 +55,7 @@ class RelayResult(Model):
     divsTime = FloatField(null=True)
     finalTime = FloatField(null=True)
     qualified = BooleanField()
+    year = IntegerField()
 
     class Meta:
         database = db
@@ -130,8 +131,11 @@ def strToTime(s: str) -> float:
         return int(t[0]) * 60 + float(t[1])
     else:
         try:
-            assert 0 < float(s) < 60
-            return float(s)
+            s = float(s)
+            if 1000 <= s < 10000:
+                s /= 100
+            assert 0 < s < 60
+            return s
         except (AssertionError, ValueError):
             print("StrToTime Warning: no time for value", s)
             return None
@@ -139,6 +143,20 @@ def strToTime(s: str) -> float:
 def noisyInt(s: str) -> int:
     s = ''.join(char for char in s if char.isdigit())
     return int(s)
+
+def ageMatch(age: int) -> int:
+    ageMap = {
+        10: 15,
+        11: 16,
+        20: 16,
+        21: 17,
+        30: 17,
+    }
+
+    if age in ageMap:
+        return ageMap[age]
+    else:
+        return age
 
 
 # with open("{} divs.txt".format(YEAR), "r") as f:
@@ -157,17 +175,19 @@ with open("{} divs.txt".format(YEAR), "r") as f:
         matchResult = divsRegexPatterns[YEAR].search(line)
         matchEvent = divsEventRegexPatterns[YEAR].search(line)
         if matchEvent:
+            if "Swim-off" in line:
+                currentEvent = None
+                continue
             matchDict = matchEvent.groupdict()
             print(matchDict)
             currentEvent = Event.get_or_create(
                 gender = matchDict["gender"],
                 stroke = matchDict["stroke"],
-                year = YEAR,
                 isRelay = False if matchDict["relay"] is None else True,
-                age = noisyInt(matchDict["age"]) if matchDict["age"].isdecimal() else None,
+                age = ageMatch(noisyInt(matchDict["age"])) if matchDict["age"].isdecimal() else None,
                 distance = noisyInt(matchDict["distance"])
             )
-        elif matchResult:
+        elif matchResult and currentEvent is not None:
             matchDict = matchResult.groupdict()
             print(matchDict)
             school = School.get_or_create(name = matchDict["school"])
@@ -185,8 +205,9 @@ with open("{} divs.txt".format(YEAR), "r") as f:
                 event = currentEvent[0],
                 seedTime = strToTime(matchDict["seedTime"]),
                 divsTime = strToTime(matchDict["divsTime"]),
+                year = YEAR,
                 defaults = {
-                    "swimmerage": noisyInt(matchDict["age"]),
+                    "swimmerage": ageMatch(noisyInt(matchDict["age"])),
                     "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"]
                 }
             )

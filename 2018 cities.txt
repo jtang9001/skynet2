@@ -320,7 +320,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 24
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 15 Girls Open 4x100 SC Meter Freestyle Relay
+Event 15 Girls Open 400 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 4:18.03 4:12.62
@@ -343,7 +343,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 25
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 16 Boys Open 4x100 SC Meter Freestyle Relay
+Event 16 Boys Open 400 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 3:45.11 3:35.60
@@ -1152,7 +1152,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 46
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 27 Girls 10 & Under 4x50 SC Meter Medley Relay
+Event 27 Girls 10 & Under 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:19.89 2:18.30
@@ -1174,7 +1174,7 @@ Finals
 Preliminaries
 9 WP Wagner A 4:11.60
 1) Poff, Morgan 10 2) Jain, Kanan 10 3) Mbabazi, Anchor 10 4) Englot, Sadie 10
-Event 27 Girls 11-20 4x50 SC Meter Medley Relay
+Event 27 Girls 11-20 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:13.19 2:07.32
@@ -1207,7 +1207,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 47
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 27 Girls 21-30 4x50 SC Meter Medley Relay
+Event 27 Girls 21-30 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:19.65 2:15.77
@@ -1246,7 +1246,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 48
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 28 Boys 10 & Under 4x50 SC Meter Medley Relay
+Event 28 Boys 10 & Under 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:05.76 2:06.41
@@ -1264,7 +1264,7 @@ Preliminaries
 1) Yang, Donny 10 2) Lam, Andrew 10 3) De Roij, Noel 10 4) Wang, Qiaochu 10
 --- WP Wagner A NS
 1) Beck, Spencer 10 2) Humura, Alain 10 3) Rossetti, Malcolm 10 4) Sharma, Ayush 10
-Event 28 Boys 11-20 4x50 SC Meter Medley Relay
+Event 28 Boys 11-20 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:05.99 2:02.08
@@ -1290,7 +1290,7 @@ Preliminaries
 1) Farr, Tavis 20 2) Nguyen, Tyler 20 3) Reyes, Aedan 20 4) Giacobbo, Rocco 20
 --- Bev Facey High School A DQ
 1) Spencer, William 20 2) Spencer, Ryrie 20 3) Martin, Craig 20 4) Porcina, Ethan 20
-Event 28 Boys 21-30 4x50 SC Meter Medley Relay
+Event 28 Boys 21-30 200 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 1:55.66 1:50.44
@@ -1302,7 +1302,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 49
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Finals ... (Event 28 Boys 21-30 4x50 SC Meter Medley Relay)
+Finals ... (Event 28 Boys 21-30 200 SC Meter Medley Relay)
 Team Relay Prelim Time Finals Time
 4 Mother Margaret Mary A 2:14.28 2:13.08
 1) Chyrchrun, Scott 20 2) Da Matta, Lucas 30 3) Halajian, Mitchell 30 4) Charrois, Jack 10
@@ -1332,7 +1332,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 50
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 29 Girls 10 & Under 4x50 SC Meter Freestyle Relay
+Event 29 Girls 10 & Under 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:11.01 2:08.85
@@ -1364,7 +1364,7 @@ Preliminaries
 1) Barneston, Jessica 10 2) Hopkin, Izzy 10 3) Peters, Jemila 10 4) Noddin, Angela 10
 14. WP Wagner A 3:46.84
 1) Poff, Morgan 10 2) Jain, Kanan 10 3) Englot, Sadie 10 4) Mbabazi, Anchor 10
-Event 29 Girls 11-20 4x50 SC Meter Freestyle Relay
+Event 29 Girls 11-20 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:07.69 1:59.08
@@ -1389,7 +1389,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 51
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Preliminaries ... (Event 29 Girls 11-20 4x50 SC Meter Freestyle Relay)
+Preliminaries ... (Event 29 Girls 11-20 200 SC Meter Freestyle Relay)
 Team Relay Prelim Time Finals Time
 10 ME LaZerte High School A 2:51.40
 1) Napora, Abby 20 2) White, Sara 20 3) Wang, Vivian 20 4) Jameson, Kayla 20
@@ -1401,7 +1401,7 @@ Team Relay Prelim Time Finals Time
 1) MacInnis, Acadia 10 2) Purewal, Priya 20 3) Signo, Nathaly 20 4) Bhardwaj, Smriti 10
 --- Ross Sheppard B NS
 --- Archbishop O'Leary A NS
-Event 29 Girls 21-30 4x50 SC Meter Freestyle Relay
+Event 29 Girls 21-30 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 2:02.49 2:01.58
@@ -1442,7 +1442,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 52
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 30 Boys 10 & Under 4x50 SC Meter Freestyle Relay
+Event 30 Boys 10 & Under 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 1:54.41 1:51.13
@@ -1466,7 +1466,7 @@ Preliminaries
 1) Wolfram, Nial 10 2) Rolinger, Conrad 10 3) Herrewynen, Daniel 10 4) Schaan, Taylor 10
 --- WP Wagner A NS
 1) Beck, Spencer 10 2) Humura, Alain 10 3) Rossetti, Malcolm 10 4) Sharma, Ayush 10
-Event 30 Boys 11-20 4x50 SC Meter Freestyle Relay
+Event 30 Boys 11-20 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 1:49.03 1:47.48
@@ -1499,13 +1499,13 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 53
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Preliminaries ... (Event 30 Boys 11-20 4x50 SC Meter Freestyle Relay)
+Preliminaries ... (Event 30 Boys 11-20 200 SC Meter Freestyle Relay)
 Team Relay Prelim Time Finals Time
 --- Archbishop O'Leary B NS
 1) Farr, Tavis 20 2) Giacobbo, Rocco 20 3) Reyes, Aedan 20 4) House, Shane 20
 --- ME LaZerte High School B NS
 1) Galloway, Duncan 10 2) Nguyen, Danny 10 3) Beesoon, Harsh 20 4) Lietz, Matt 20
-Event 30 Boys 21-30 4x50 SC Meter Freestyle Relay
+Event 30 Boys 21-30 200 SC Meter Freestyle Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Strathcona High School A 1:51.17 1:47.68
@@ -1548,7 +1548,7 @@ Preliminaries
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 1:13 PM 06/12/2018 Page 54
 2018 Metro Edmonton HS Swim Championships - 28/11/2018 to 05/12/2018
 Results - Metro Edmonton Swimming Championships
-Event 31 Mixed Open 4x100 SC Meter Medley Relay
+Event 31 Mixed Open 400 SC Meter Medley Relay
 Team Relay Prelim Time Finals Time
 Finals
 1 Ross Sheppard A 4:47.75 4:43.76
@@ -1711,7 +1711,7 @@ Name Age Team Prelim Time Finals Time
 33 Wright, Jaiden 20 Archbishop Jordan High School 38.39
 34 Espiritu, Andrei 20 Blessed Oscar Romero 38.46
 35 Ollenberger, Nicholas 20 Austin O'Brien 38.81
-36 ©Porcina, Ethan 20 Bev Facey High School 39.26
+36 ï¿½Porcina, Ethan 20 Bev Facey High School 39.26
 37 Duda, Logan 20 Austin O'Brien 40.04
 38 Li, Daniel 20 Louis St Laurent School 41.37
 39 Khan, Raiyan 20 Old Scona Academic 41.43

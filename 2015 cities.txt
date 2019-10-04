@@ -110,7 +110,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 19
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 19 Girls 4x100 SC Meter Freestyle Relay Open
+Event 19 Girls 400 SC Meter Freestyle Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Female Swimmer, A 4:26.48 4:21.31 50
@@ -124,7 +124,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 20
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 20 Boys 4x100 SC Meter Freestyle Relay Open
+Event 20 Boys 400 SC Meter Freestyle Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Male Swimmers) A 4:07.19 50
@@ -218,7 +218,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 25
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 25 Girls 4x100 SC Meter Medley Relay Open
+Event 25 Girls 400 SC Meter Medley Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Female Swimmer, A 5:02.14 50
@@ -232,7 +232,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 26
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 26 Boys 4x100 SC Meter Medley Relay Open
+Event 26 Boys 400 SC Meter Medley Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Paul Kane High School A 4:13.05 50
@@ -866,7 +866,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 45
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 45 Girls 4x50 SC Meter Medley Relay Novice
+Event 45 Girls 200 SC Meter Medley Relay Novice
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Harry Ainlay High School-AE A 2:40.99 2:38.48 50
@@ -881,7 +881,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 46
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 46 Boys 4x50 SC Meter Medley Relay Novice
+Event 46 Boys 200 SC Meter Medley Relay Novice
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Ross Sheppard A 2:36.90 2:30.49 50
@@ -895,7 +895,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 47
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 47 Girls 4x50 SC Meter Medley Relay Open
+Event 47 Girls 200 SC Meter Medley Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Female Swimmer, A 2:11.09 50
@@ -909,7 +909,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 48
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 48 Boys 4x50 SC Meter Medley Relay Open
+Event 48 Boys 200 SC Meter Medley Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Paul Kane High School A 1:53.16 50
@@ -923,7 +923,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 49
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 49 Girls 4x50 SC Meter Freestyle Relay Novice
+Event 49 Girls 200 SC Meter Freestyle Relay Novice
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Female Swimmer, A 2:19.54 50
@@ -937,7 +937,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 50
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 50 Boys 4x50 SC Meter Freestyle Relay Novice
+Event 50 Boys 200 SC Meter Freestyle Relay Novice
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Male Swimmers) A 2:03.41 50
@@ -951,7 +951,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 51
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 51 Girls 4x50 SC Meter Freestyle Relay Open
+Event 51 Girls 200 SC Meter Freestyle Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Strathcona (Female Swimmer, A 1:56.95 1:56.35 50
@@ -965,7 +965,7 @@ Finals
 Edmonton Keyano Swim Club HY-TEK's MEET MANAGER 6.0 - 2:11 PM 12/15/2015 Page 52
 Metro City Championships 2015 - 12/14/2015
 Results - City Finals
-Event 52 Boys 4x50 SC Meter Freestyle Relay Open
+Event 52 Boys 200 SC Meter Freestyle Relay Open
 Team Relay Prelim Time Finals Time Points
 Finals
 1 Spruce Grove A 1:51.82 50

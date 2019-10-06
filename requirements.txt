@@ -5,3 +5,5 @@ pdfminer.six
 chardet
 matplotlib
 peewee
+tabula-py
+PyPDF2

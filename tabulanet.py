@@ -2,6 +2,11 @@ import tabula
 import PyPDF2
 import re
 
+YEAR = 2016
+
+filename = "data/{} divs.pdf".format(YEAR)
+pdfObj = PyPDF2.PdfFileReader(filename)
+
 eventRegex = re.compile(
     r'''Event\ \d+\ +
     (?P<gender>Boys|Girls|Mixed)\ 
@@ -11,8 +16,25 @@ eventRegex = re.compile(
     (?P<relay>\ Relay)?''',
     re.VERBOSE)
 
-filename = "data/2016 divs.pdf"
-pdfObj = PyPDF2.PdfFileReader(filename)
+divsRegex = re.compile(
+    r"""(?P<rank>[\-\d]+)\ + #rank, followed by usually a space but also period or comma due to OCR noise
+    (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
+    (?P<age>[\d]+)(.0)?\ + #age; space escaped
+    (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
+    (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
+    (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ + #divs time
+    (?P<qualified>q?) #qualified indicator, possibly with some OCR noise""",
+    re.VERBOSE)
+
+citiesRegex = re.compile(
+    r"""(?P<rank>[\-\d]+)\ + #rank, followed by usually a space but also period or comma due to OCR noise
+    (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
+    (?P<age>[\d]+)(.0)?\ + #age; space escaped
+    (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
+    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
+    (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ + #divs time""",
+    re.VERBOSE)
+
 
 for pageNum in range(pdfObj.numPages):
     pageObj = pdfObj.getPage(pageNum)
@@ -20,5 +42,7 @@ for pageNum in range(pdfObj.numPages):
     eventMatch = eventRegex.search(pageTxt)
     if eventMatch:
         print(eventMatch.groupdict())
-    df = tabula.read_pdf(filename, pages=pageNum+1)
-    print(df)
+    table = tabula.read_pdf(filename, pages=pageNum+1).to_string(index=False, index_names=False)
+    print(table)
+    for match in divsRegex.finditer(table):
+        print(match.groupdict())

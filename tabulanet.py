@@ -127,37 +127,34 @@ for pageNum in range(pdfObj.numPages):
             age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
             distance = int(matchDict["distance"])
         )
-    try:
-        table = tabula.read_pdf(filename, pages=pageNum+1, multiple_tables=True).to_string(index=False, index_names=False, na_rep='')
-        print(len(table))
-    except Exception:
-        traceback.print_exc()
-        continue
-    
-    print(table)
-    for match in divsRegex.finditer(table):
-        matchDict = match.groupdict()
-        print(matchDict)
-        school = School.get_or_create(name = matchDict["school"].strip())
-        swimmer = Swimmer.get_or_create(
-            firstName = matchDict["firstName"].strip(),
-            lastName = matchDict["lastName"].strip(),
-            defaults = {
-                "gender": currentEvent[0].gender,
-                "school": school[0]
-            }
-        )
-        result = Result.get_or_create(
-            divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
-            swimmer = swimmer[0],
-            event = currentEvent[0],
-            seedTime = strToTime(matchDict["seedTime"]),
-            divsTime = strToTime(matchDict["divsTime"]),
-            defaults = {
-                "swimmerage": ageMatch(int(matchDict["age"])),
-                "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
-                "year": YEAR
-            }
-        )
+    tables = tabula.read_pdf(filename, pages=pageNum+1, multiple_tables=True)
+    for table in tables:
+        print(table)
+        tableStr = table.to_string(index=False, index_names=False, na_rep='')
+        
+        for match in divsRegex.finditer(tableStr):
+            matchDict = match.groupdict()
+            print(matchDict)
+            school = School.get_or_create(name = matchDict["school"].strip())
+            swimmer = Swimmer.get_or_create(
+                firstName = matchDict["firstName"].strip(),
+                lastName = matchDict["lastName"].strip(),
+                defaults = {
+                    "gender": currentEvent[0].gender,
+                    "school": school[0]
+                }
+            )
+            result = Result.get_or_create(
+                divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
+                swimmer = swimmer[0],
+                event = currentEvent[0],
+                seedTime = strToTime(matchDict["seedTime"]),
+                divsTime = strToTime(matchDict["divsTime"]),
+                defaults = {
+                    "swimmerage": ageMatch(int(matchDict["age"])),
+                    "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+                    "year": YEAR
+                }
+            )
 
 db.close()

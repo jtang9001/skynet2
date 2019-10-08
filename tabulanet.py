@@ -114,26 +114,34 @@ db.connect()
 db.create_tables([School, Swimmer, Result, Event])
 
 for pageNum in range(pdfObj.numPages):
-    pageObj = pdfObj.getPage(pageNum)
-    pageTxt = pageObj.extractText()
-    eventMatch = eventRegex.search(pageTxt)
-    if eventMatch:
-        matchDict = eventMatch.groupdict()
-        print(matchDict)
-        currentEvent = Event.get_or_create(
-            gender = matchDict["gender"],
-            stroke = matchDict["stroke"],
-            isRelay = False if matchDict["relay"] is None else True,
-            age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
-            distance = int(matchDict["distance"])
-        )
-    tables = tabula.read_pdf(filename, pages=pageNum+1, multiple_tables=True)
-    for table in tables:
-        print(table)
-        tableStr = table.to_string(index=False, index_names=False, na_rep='')
-        
-        for match in divsRegex.finditer(tableStr):
-            matchDict = match.groupdict()
+    try:
+        table = tabula.read_pdf(filename, pages=pageNum+1, guess=False)
+    except Exception:
+        traceback.print_exc()
+        continue
+
+    print(table)
+    tablerows = table.fillna("").to_string(index=False, index_names=False, na_rep='').split('\n')
+    
+    for line in tablerows:
+        #print(line.strip())
+        matchResult = divsRegex.search(line)
+        matchEvent = eventRegex.search(line)
+        if matchEvent:
+            if "Swim-off" in line:
+                currentEvent = None
+                continue
+            matchDict = matchEvent.groupdict()
+            print(matchDict)
+            currentEvent = Event.get_or_create(
+                gender = matchDict["gender"],
+                stroke = matchDict["stroke"],
+                isRelay = False if matchDict["relay"] is None else True,
+                age = ageMatch(matchDict["age"]) if matchDict["age"].isdecimal() else None,
+                distance = matchDict["distance"]
+            )
+        elif matchResult and currentEvent is not None:
+            matchDict = matchResult.groupdict()
             print(matchDict)
             school = School.get_or_create(name = matchDict["school"].strip())
             swimmer = Swimmer.get_or_create(

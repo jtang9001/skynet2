@@ -1,3 +1,4 @@
+import pandas as pd
 import tabula
 import PyPDF2
 import re
@@ -6,7 +7,7 @@ from peewee import *
 
 YEAR = 2018
 
-filename = "data/{} divs.pdf".format(YEAR)
+filename = "data/{} cities.pdf".format(YEAR)
 pdfObj = PyPDF2.PdfFileReader(filename)
 
 
@@ -109,7 +110,7 @@ def ageMatch(age: int) -> int:
     else:
         return age
 
-
+pd.set_option('display.max_colwidth', -1)
 db.connect()
 db.create_tables([School, Swimmer, Result, Event])
 
@@ -120,13 +121,20 @@ for pageNum in range(pdfObj.numPages):
         traceback.print_exc()
         continue
 
-    print(table)
-    tablerows = table.fillna("").to_string(index=False, index_names=False, na_rep='').split('\n')
+    tableStr = table.to_string(
+        index=False, 
+        index_names=False, 
+        na_rep='', 
+        header=False
+    )
+    print(tableStr)
+    tablerows = tableStr.split('\n')
     
     for line in tablerows:
         #print(line.strip())
-        matchResult = divsRegex.search(line)
+        matchDivs = divsRegex.search(line)
         matchEvent = eventRegex.search(line)
+        matchCities = citiesRegex.search(line)
         if matchEvent:
             if "Swim-off" in line:
                 currentEvent = None
@@ -137,11 +145,11 @@ for pageNum in range(pdfObj.numPages):
                 gender = matchDict["gender"],
                 stroke = matchDict["stroke"],
                 isRelay = False if matchDict["relay"] is None else True,
-                age = ageMatch(matchDict["age"]) if matchDict["age"].isdecimal() else None,
+                age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
                 distance = matchDict["distance"]
             )
-        elif matchResult and currentEvent is not None:
-            matchDict = matchResult.groupdict()
+        elif matchDivs and currentEvent is not None and "divs" in filename:
+            matchDict = matchDivs.groupdict()
             print(matchDict)
             school = School.get_or_create(name = matchDict["school"].strip())
             swimmer = Swimmer.get_or_create(
@@ -164,5 +172,21 @@ for pageNum in range(pdfObj.numPages):
                     "year": YEAR
                 }
             )
+        elif matchCities and currentEvent is not None and "cities" in filename:
+            matchDict = matchCities.groupdict()
+            print(matchDict)
+            swimmer = Swimmer.get(
+                firstName = matchDict["firstName"].strip(),
+                lastName = matchDict["lastName"].strip()
+            )
+            result = Result.get(
+                swimmer = swimmer,
+                event = currentEvent[0],
+                divsTime = strToTime(matchDict["divsTime"]),
+                year = YEAR
+            )
+            result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
+            result.finalTime = strToTime(matchDict["citiesTime"])
+            result.save()
 
 db.close()

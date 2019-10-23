@@ -31,7 +31,11 @@ regexes = {
         (?P<relayteam>A|B)\ +
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ +
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})\ *
-        (?P<qualified>q?)''',
+        (?P<qualified>q?)\ *[\r\n]\ *
+        1\)\ +(?P<lastname1>[A-Za-z \-']+),\ (?P<firstname1>[A-Za-z \-']+)\ +(?P<age1>\d+)\ +
+        2\)\ +(?P<lastname2>[A-Za-z \-']+),\ (?P<firstname2>[A-Za-z \-']+)\ +(?P<age2>\d+)\ +
+        3\)\ +(?P<lastname3>[A-Za-z \-']+),\ (?P<firstname3>[A-Za-z \-']+)\ +(?P<age3>\d+)\ +
+        4\)\ +(?P<lastname4>[A-Za-z \-']+),\ (?P<firstname4>[A-Za-z \-']+)\ +(?P<age4>\d+)''',
         re.VERBOSE),
 
     "citiesInd": re.compile(
@@ -51,10 +55,11 @@ regexes = {
         (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
         re.VERBOSE),
 
-    "relayParticipants": re.compile(
-        r'''
-        ''',
-        re.VERBOSE
+    "relayParticipant": re.compile(
+        r"""(?P<relayPos>\d)\)\ +
+        (?P<lastname1>[A-Za-z \-']+),\ 
+        (?P<firstname1>[A-Za-z \-']+)\ +
+        (?P<age1>\d+)"""
     )
 }
 

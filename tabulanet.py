@@ -5,33 +5,40 @@ import re
 import traceback
 from peewee import *
 
-eventRegex = re.compile(
+regexes = {
+    "event": re.compile(
     r'''Event\ \d+\ +
     (?P<gender>Boys|Girls|Mixed)\ 
     (?P<age>\d{2}|Open).+
     (?P<distance>50|100|200|400).+Meter\ 
     (?P<stroke>[A-Za-z]+)
     (?P<relay>\ Relay)?''',
-    re.VERBOSE)
-
-divsRegex = re.compile(
+    re.VERBOSE),
+    "divsInd": re.compile(
     r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
     (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
     (?P<age>[\d]+)(.0)?\ + #age; space escaped
     (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
-    (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
+    (?P<seedTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ + #seed time
     (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ * #divs time
     (?P<qualified>q?) #qualified indicator, possibly with some OCR noise""",
-    re.VERBOSE)
-
-citiesRegex = re.compile(
+    re.VERBOSE),
+    "citiesInd": re.compile(
     r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
     (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
     (?P<age>[\d]+)(.0)?\ + #age; space escaped
     (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
-    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
-    (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ * #divs time""",
+    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ + #divs time
+    (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #cities time""",
+    re.VERBOSE),
+    "citiesRelayTeam": re.compile(
+    r"""(?P<rank>[\-\d]+)\ +
+    (?P<school>[A-Za-z \-'()\d.]+)\ +
+    (?P<relayteam>A|B)\ +
+    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ +
+    (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
     re.VERBOSE)
+}
 
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
@@ -104,9 +111,60 @@ def ageMatch(age: int) -> int:
     else:
         return age
 
-pd.set_option('display.max_colwidth', -1)
-db.connect()
-db.create_tables([School, Swimmer, Result, Event])
+def getEventFromLine(line, matchObj):
+    if "Swim-off" in line:
+        return None
+    matchDict = matchObj.groupdict()
+    print(matchDict)
+    return Event.get_or_create(
+        gender = matchDict["gender"],
+        stroke = matchDict["stroke"],
+        isRelay = False if matchDict["relay"] is None else True,
+        age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
+        distance = matchDict["distance"]
+    )
+
+def getDivsIndFromLine(matchObj, currentEvent):
+    matchDict = matchObj.groupdict()
+    print(matchDict)
+    school = School.get_or_create(name = matchDict["school"].strip())
+    swimmer = Swimmer.get_or_create(
+        firstName = matchDict["firstName"].strip(),
+        lastName = matchDict["lastName"].strip(),
+        defaults = {
+            "gender": currentEvent.gender,
+            "school": school[0]
+        }
+    )
+    result = Result.get_or_create(
+        divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
+        swimmer = swimmer[0],
+        event = currentEvent,
+        seedTime = strToTime(matchDict["seedTime"]),
+        divsTime = strToTime(matchDict["divsTime"]),
+        defaults = {
+            "swimmerage": ageMatch(int(matchDict["age"])),
+            "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+            "year": YEAR
+        }
+    )
+
+def getCitiesIndFromLine(matchObj, currentEvent):
+    matchDict = matchObj.groupdict()
+    print(matchDict)
+    swimmer = Swimmer.get(
+        firstName = matchDict["firstName"].strip(),
+        lastName = matchDict["lastName"].strip()
+    )
+    result = Result.get(
+        swimmer = swimmer,
+        event = currentEvent,
+        divsTime = strToTime(matchDict["divsTime"]),
+        year = YEAR
+    )
+    result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
+    result.finalTime = strToTime(matchDict["citiesTime"])
+    result.save()
 
 def readPDFtoDB(pdfObj, filename):
     for pageNum in range(pdfObj.numPages):
@@ -126,63 +184,21 @@ def readPDFtoDB(pdfObj, filename):
         tablerows = tableStr.split('\n')
         
         for line in tablerows:
-            #print(line.strip())
-            matchDivs = divsRegex.search(line)
-            matchEvent = eventRegex.search(line)
-            matchCities = citiesRegex.search(line)
-            if matchEvent:
-                if "Swim-off" in line:
-                    currentEvent = None
-                    continue
-                matchDict = matchEvent.groupdict()
-                print(matchDict)
-                currentEvent = Event.get_or_create(
-                    gender = matchDict["gender"],
-                    stroke = matchDict["stroke"],
-                    isRelay = False if matchDict["relay"] is None else True,
-                    age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
-                    distance = matchDict["distance"]
-                )
-            elif matchDivs and currentEvent is not None and "divs" in filename:
-                matchDict = matchDivs.groupdict()
-                print(matchDict)
-                school = School.get_or_create(name = matchDict["school"].strip())
-                swimmer = Swimmer.get_or_create(
-                    firstName = matchDict["firstName"].strip(),
-                    lastName = matchDict["lastName"].strip(),
-                    defaults = {
-                        "gender": currentEvent[0].gender,
-                        "school": school[0]
-                    }
-                )
-                result = Result.get_or_create(
-                    divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
-                    swimmer = swimmer[0],
-                    event = currentEvent[0],
-                    seedTime = strToTime(matchDict["seedTime"]),
-                    divsTime = strToTime(matchDict["divsTime"]),
-                    defaults = {
-                        "swimmerage": ageMatch(int(matchDict["age"])),
-                        "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
-                        "year": YEAR
-                    }
-                )
-            elif matchCities and currentEvent is not None and "cities" in filename:
-                matchDict = matchCities.groupdict()
-                print(matchDict)
-                swimmer = Swimmer.get(
-                    firstName = matchDict["firstName"].strip(),
-                    lastName = matchDict["lastName"].strip()
-                )
-                result = Result.get(
-                    swimmer = swimmer,
-                    event = currentEvent[0],
-                    divsTime = strToTime(matchDict["divsTime"]),
-                    year = YEAR
-                )
-                result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
-                result.finalTime = strToTime(matchDict["citiesTime"])
-                result.save()
+            for linetype, regex in regexes.items():
+                if regex.search(line):
+                    if linetype == "event":
+                        currentEvent = getEventFromLine(line, regex.search(line))[0]
+
+                    elif currentEvent is not None and "divs" in filename:
+                        if linetype == "divsInd":
+                            getDivsIndFromLine(regex.search(line), currentEvent)
+
+                    elif currentEvent is not None and "cities" in filename:
+                        if linetype == "citiesInd":
+                            getCitiesIndFromLine(regex.search(line), currentEvent)
+                        elif linetype == "citiesRelayTeam":
+                            print(regex.search(line).groupdict())
+
 
 if __name__ == "__main__":
     YEAR = 2018

@@ -7,37 +7,55 @@ from peewee import *
 
 regexes = {
     "event": re.compile(
-    r'''Event\ \d+\ +
-    (?P<gender>Boys|Girls|Mixed)\ 
-    (?P<age>\d{2}|Open).+
-    (?P<distance>50|100|200|400).+Meter\ 
-    (?P<stroke>[A-Za-z]+)
-    (?P<relay>\ Relay)?''',
-    re.VERBOSE),
+        r'''Event\ \d+\ +
+        (?P<gender>Boys|Girls|Mixed)\ 
+        (?P<age>\d{2}|Open).+
+        (?P<distance>50|100|200|400).+Meter\ 
+        (?P<stroke>[A-Za-z]+)
+        (?P<relay>\ Relay)?''',
+        re.VERBOSE),
+
     "divsInd": re.compile(
-    r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
-    (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
-    (?P<age>[\d]+)(.0)?\ + #age; space escaped
-    (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
-    (?P<seedTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ + #seed time
-    (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ * #divs time
-    (?P<qualified>q?) #qualified indicator, possibly with some OCR noise""",
-    re.VERBOSE),
+        r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
+        (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<age>[\d]+)(.0)?\ + #age; space escaped
+        (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
+        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
+        (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ * #divs time
+        (?P<qualified>q?) #qualified indicator, possibly with some OCR noise""",
+        re.VERBOSE),
+
+    "divsRelayTeam": re.compile(
+        r'''(?P<rank>[\-\d]+)\ +
+        (?P<school>[A-Za-z \-'()\d.]+)\ +
+        (?P<relayteam>A|B)\ +
+        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ +
+        (?P<divsTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})\ *
+        (?P<qualified>q?)''',
+        re.VERBOSE),
+
     "citiesInd": re.compile(
-    r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
-    (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
-    (?P<age>[\d]+)(.0)?\ + #age; space escaped
-    (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
-    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ + #divs time
-    (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #cities time""",
-    re.VERBOSE),
+        r"""(?P<rank>[\-\d]+)(.0)?\ + #rank, followed by usually a space but also period or comma due to OCR noise
+        (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
+        (?P<age>[\d]+)(.0)?\ + #age; space escaped
+        (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
+        (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS|NT)\ + #divs time
+        (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #cities time""",
+        re.VERBOSE),
+
     "citiesRelayTeam": re.compile(
-    r"""(?P<rank>[\-\d]+)\ +
-    (?P<school>[A-Za-z \-'()\d.]+)\ +
-    (?P<relayteam>A|B)\ +
-    (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS)\ +
-    (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
-    re.VERBOSE)
+        r"""(?P<rank>[\-\d]+)\ +
+        (?P<school>[A-Za-z \-'()\d.]+)\ +
+        (?P<relayteam>A|B)\ +
+        (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS|NT)\ +
+        (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
+        re.VERBOSE),
+
+    "relayParticipants": re.compile(
+        r'''
+        ''',
+        re.VERBOSE
+    )
 }
 
 db = SqliteDatabase("results.db", pragmas = {
@@ -126,7 +144,7 @@ def getEventFromLine(line, matchObj):
 
 def getDivsIndFromLine(matchObj, currentEvent):
     matchDict = matchObj.groupdict()
-    print(matchDict)
+    #print(matchDict)
     school = School.get_or_create(name = matchDict["school"].strip())
     swimmer = Swimmer.get_or_create(
         firstName = matchDict["firstName"].strip(),
@@ -151,7 +169,7 @@ def getDivsIndFromLine(matchObj, currentEvent):
 
 def getCitiesIndFromLine(matchObj, currentEvent):
     matchDict = matchObj.groupdict()
-    print(matchDict)
+    #print(matchDict)
     swimmer = Swimmer.get(
         firstName = matchDict["firstName"].strip(),
         lastName = matchDict["lastName"].strip()
@@ -192,6 +210,8 @@ def readPDFtoDB(pdfObj, filename):
                     elif currentEvent is not None and "divs" in filename:
                         if linetype == "divsInd":
                             getDivsIndFromLine(regex.search(line), currentEvent)
+                        elif linetype == "divsRelayTeam":
+                            print(regex.search(line).groupdict())
 
                     elif currentEvent is not None and "cities" in filename:
                         if linetype == "citiesInd":
@@ -201,8 +221,8 @@ def readPDFtoDB(pdfObj, filename):
 
 
 if __name__ == "__main__":
-    YEAR = 2018
-    filename = "data/{} cities.pdf".format(YEAR)
+    YEAR = 2016
+    filename = "data/{} divs.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 
     pd.set_option('display.max_colwidth', -1)

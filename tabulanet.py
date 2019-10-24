@@ -28,14 +28,10 @@ regexes = {
     "divsRelayTeam": re.compile(
         r'''(?P<rank>[\-\d]+)\ +
         (?P<school>[A-Za-z \-'()\d.]+)\ +
-        (?P<relayteam>A|B)\ +
+        (?P<designation>[A-F])\ +
         (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ +
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})\ *
-        (?P<qualified>q?)\ *[\r\n]\ *
-        1\)\ +(?P<lastname1>[A-Za-z \-']+),\ (?P<firstname1>[A-Za-z \-']+)\ +(?P<age1>\d+)\ +
-        2\)\ +(?P<lastname2>[A-Za-z \-']+),\ (?P<firstname2>[A-Za-z \-']+)\ +(?P<age2>\d+)\ +
-        3\)\ +(?P<lastname3>[A-Za-z \-']+),\ (?P<firstname3>[A-Za-z \-']+)\ +(?P<age3>\d+)\ +
-        4\)\ +(?P<lastname4>[A-Za-z \-']+),\ (?P<firstname4>[A-Za-z \-']+)\ +(?P<age4>\d+)''',
+        (?P<qualified>q?)''',
         re.VERBOSE),
 
     "citiesInd": re.compile(
@@ -50,17 +46,17 @@ regexes = {
     "citiesRelayTeam": re.compile(
         r"""(?P<rank>[\-\d]+)\ +
         (?P<school>[A-Za-z \-'()\d.]+)\ +
-        (?P<relayteam>A|B)\ +
+        (?P<designation>[A-F])\ +
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS|NT)\ +
         (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
         re.VERBOSE),
 
     "relayParticipant": re.compile(
         r"""(?P<relayPos>\d)\)\ +
-        (?P<lastname1>[A-Za-z \-']+),\ 
-        (?P<firstname1>[A-Za-z \-']+)\ +
-        (?P<age1>\d+)"""
-    )
+        (?P<lastname>[A-Za-z \-']+),\ 
+        (?P<firstname>[A-Za-z \-']+)\ +
+        (M|W)?(?P<age>\d+)""",
+        re.VERBOSE)
 }
 
 db = SqliteDatabase("results.db", pragmas = {
@@ -107,6 +103,30 @@ class Result(Model):
     class Meta:
         database = db
 
+class RelayResult(Model):
+    divsRank = IntegerField(null=True)
+    finalRank = IntegerField(null=True)
+    school = ForeignKeyField(School, backref = "relayresults")
+    event = ForeignKeyField(Event, backref = "relayresults")
+    designation = CharField(null=True)
+    seedTime = FloatField(null=True)
+    divsTime = FloatField(null=True)
+    finalTime = FloatField(null=True)
+    qualified = BooleanField()
+    year = IntegerField()
+
+    class Meta:
+        database = db
+
+class RelayParticipant(Model):
+    swimmer = ForeignKeyField(Swimmer, backref = "relays")
+    relay = ForeignKeyField(RelayResult, backref = "swimmers")
+    pos = IntegerField()
+    age = IntegerField(null=True)
+
+    class Meta:
+        database = db
+
 def strToTime(s: str) -> float:
     if ":" in s:
         t = s.split(":")
@@ -134,11 +154,9 @@ def ageMatch(age: int) -> int:
     else:
         return age
 
-def getEventFromLine(line, matchObj):
+def getEventFromLine(line, matchDict):
     if "Swim-off" in line:
         return None
-    matchDict = matchObj.groupdict()
-    print(matchDict)
     return Event.get_or_create(
         gender = matchDict["gender"],
         stroke = matchDict["stroke"],
@@ -147,8 +165,7 @@ def getEventFromLine(line, matchObj):
         distance = matchDict["distance"]
     )
 
-def getDivsIndFromLine(matchObj, currentEvent):
-    matchDict = matchObj.groupdict()
+def getDivsInd(matchDict, currentEvent):
     #print(matchDict)
     school = School.get_or_create(name = matchDict["school"].strip())
     swimmer = Swimmer.get_or_create(
@@ -172,8 +189,41 @@ def getDivsIndFromLine(matchObj, currentEvent):
         }
     )
 
-def getCitiesIndFromLine(matchObj, currentEvent):
-    matchDict = matchObj.groupdict()
+def getDivsRelay(matchDict, currentEvent):
+    #print(matchDict)
+    school = School.get_or_create(name = matchDict["school"].strip())
+    result = RelayResult.get_or_create(
+        divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
+        school = school[0],
+        designation = matchDict["designation"],
+        event = currentEvent,
+        seedTime = strToTime(matchDict["seedTime"]),
+        divsTime = strToTime(matchDict["divsTime"]),
+        defaults = {
+            "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
+            "year": YEAR
+        }
+    )
+    return result[0]
+
+def updateRelayParticipant(matchDict, relay, event):
+    swimmer = Swimmer.get_or_create(
+        firstName = matchDict["firstname"].strip(),
+        lastName = matchDict["lastname"].strip(),
+        defaults = {
+            "gender": event.gender,
+            "school": relay.school
+        }
+    )[0]
+    participant = RelayParticipant.get_or_create(
+        swimmer = swimmer,
+        relay = relay,
+        pos = int(matchDict["relayPos"]),
+        age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None
+    )
+
+
+def updateCitiesInd(matchDict, currentEvent):
     #print(matchDict)
     swimmer = Swimmer.get(
         firstName = matchDict["firstName"].strip(),
@@ -188,6 +238,19 @@ def getCitiesIndFromLine(matchObj, currentEvent):
     result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
     result.finalTime = strToTime(matchDict["citiesTime"])
     result.save()
+
+def updateCitiesRelay(matchDict, currentEvent):
+    school = School.get(name = matchDict["school"].strip())
+    result = RelayResult.get(
+        school = school,
+        event = currentEvent,
+        divsTime = strToTime(matchDict["divsTime"]),
+        year = YEAR
+    )
+    result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
+    result.finalTime = strToTime(matchDict["citiesTime"])
+    result.save()
+
 
 def readPDFtoDB(pdfObj, filename):
     for pageNum in range(pdfObj.numPages):
@@ -209,20 +272,32 @@ def readPDFtoDB(pdfObj, filename):
         for line in tablerows:
             for linetype, regex in regexes.items():
                 if regex.search(line):
+                    matchDict = regex.search(line).groupdict()
                     if linetype == "event":
-                        currentEvent = getEventFromLine(line, regex.search(line))[0]
+                        print(matchDict)
+                        currentEvent = getEventFromLine(line, matchDict)[0]
 
                     elif currentEvent is not None and "divs" in filename:
                         if linetype == "divsInd":
-                            getDivsIndFromLine(regex.search(line), currentEvent)
+                            print(matchDict)
+                            getDivsInd(matchDict, currentEvent)
                         elif linetype == "divsRelayTeam":
-                            print(regex.search(line).groupdict())
+                            print(matchDict)
+                            currentRelay = getDivsRelay(matchDict, currentEvent)
+                        elif linetype == "relayParticipant":
+                            for match in regexes["relayParticipant"].finditer(line):
+                                print(match.groupdict())
+                                updateRelayParticipant(match.groupdict(), currentRelay, currentEvent)
 
                     elif currentEvent is not None and "cities" in filename:
                         if linetype == "citiesInd":
-                            getCitiesIndFromLine(regex.search(line), currentEvent)
+                            print(matchDict)
+                            updateCitiesInd(matchDict, currentEvent)
                         elif linetype == "citiesRelayTeam":
-                            print(regex.search(line).groupdict())
+                            print(matchDict)
+                            updateCitiesRelay(matchDict, currentEvent)
+
+            
 
 
 if __name__ == "__main__":
@@ -233,6 +308,6 @@ if __name__ == "__main__":
     pd.set_option('display.max_colwidth', -1)
 
     db.connect()
-    #db.create_tables([School, Swimmer, Result, Event])
+    db.create_tables([School, Swimmer, Result, Event, RelayResult, RelayParticipant])
     readPDFtoDB(pdfObj, filename)
     db.close()

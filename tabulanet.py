@@ -40,7 +40,7 @@ regexes = {
         (?P<age>[\d]+)(.0)?\ + #age; space escaped
         (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS|NT)\ + #divs time
-        (?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #cities time""",
+        x?(?P<citiesTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,}) #cities time""",
         re.VERBOSE),
 
     "citiesRelayTeam": re.compile(
@@ -48,7 +48,7 @@ regexes = {
         (?P<school>[A-Za-z \-'()\d.]+)\ +
         (?P<designation>[A-F])\ +
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|DQ|NS|NT)\ +
-        (?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
+        x?(?P<citiesTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})""",
         re.VERBOSE),
 
     "relayParticipant": re.compile(
@@ -157,12 +157,20 @@ def ageMatch(age: int) -> int:
 def getEventFromLine(line, matchDict):
     if "Swim-off" in line:
         return None
+    isRelay = False if matchDict["relay"] is None else True
+    dist = int(matchDict["distance"])
+    if isRelay:
+        if dist == 50:
+            dist = 200
+        elif dist == 100:
+            dist = 400
+    
     return Event.get_or_create(
         gender = matchDict["gender"],
         stroke = matchDict["stroke"],
         isRelay = False if matchDict["relay"] is None else True,
         age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
-        distance = matchDict["distance"]
+        distance = dist
     )
 
 def getDivsInd(matchDict, currentEvent):
@@ -241,15 +249,19 @@ def updateCitiesInd(matchDict, currentEvent):
 
 def updateCitiesRelay(matchDict, currentEvent):
     school = School.get(name = matchDict["school"].strip())
-    result = RelayResult.get(
-        school = school,
-        event = currentEvent,
-        divsTime = strToTime(matchDict["divsTime"]),
-        year = YEAR
-    )
-    result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
-    result.finalTime = strToTime(matchDict["citiesTime"])
-    result.save()
+    try:
+        result = RelayResult.get(
+            school = school,
+            event = currentEvent,
+            divsTime = strToTime(matchDict["divsTime"]),
+            year = YEAR
+        )
+        result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
+        result.finalTime = strToTime(matchDict["citiesTime"])
+        result.save()
+    except Exception:
+        traceback.print_exc()
+        return
 
 
 def readPDFtoDB(pdfObj, filename):
@@ -302,7 +314,7 @@ def readPDFtoDB(pdfObj, filename):
 
 if __name__ == "__main__":
     YEAR = 2016
-    filename = "data/{} divs.pdf".format(YEAR)
+    filename = "data/{} cities.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 
     pd.set_option('display.max_colwidth', -1)

@@ -69,6 +69,9 @@ class School(Model):
     class Meta:
         database = db
 
+    def __str__(self):
+        return self.name
+
 class Swimmer(Model):
     firstName = CharField()
     lastName = CharField()
@@ -77,6 +80,9 @@ class Swimmer(Model):
 
     class Meta:
         database = db
+
+    def __str__(self):
+        return "{} {} at {}".format(self.firstName, self.lastName, self.school.name)
 
 class Event(Model):
     age = IntegerField(null=True)
@@ -87,6 +93,14 @@ class Event(Model):
 
     class Meta:
         database = db
+
+    def __str__(self):
+        return "{} {} {}m {} {}".format(
+            self.gender, 
+            self.age if self.age is not None else "Open",
+            self.distance, 
+            self.stroke,
+            "Relay" if self.isRelay else "")
 
 class Result(Model):
     divsRank = IntegerField(null=True)
@@ -102,6 +116,12 @@ class Result(Model):
 
     class Meta:
         database = db
+    
+    def __str__(self):
+        return "{}->{} {} {}->{}".format(
+            self.divsRank, self.finalRank, 
+            self.swimmer,
+            self.divsTime, self.finalTime)
 
 class RelayResult(Model):
     divsRank = IntegerField(null=True)
@@ -117,6 +137,12 @@ class RelayResult(Model):
 
     class Meta:
         database = db
+
+    def __str__(self):
+        return "{}->{} {} {} {}->{}".format(
+            self.divsRank, self.finalRank, 
+            self.school.name, self.designation,
+            self.divsTime, self.finalTime)
 
 class RelayParticipant(Model):
     swimmer = ForeignKeyField(Swimmer, backref = "relays")

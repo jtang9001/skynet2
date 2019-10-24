@@ -313,7 +313,7 @@ def readPDFtoDB(pdfObj, filename):
 
 
 if __name__ == "__main__":
-    YEAR = 2016
+    YEAR = 2018
     filename = "data/{} cities.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 

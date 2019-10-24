@@ -76,13 +76,12 @@ class Swimmer(Model):
     firstName = CharField()
     lastName = CharField()
     gender = CharField()
-    school = ForeignKeyField(School, backref = "swimmers")
 
     class Meta:
         database = db
 
     def __str__(self):
-        return "{} {} at {}".format(self.firstName, self.lastName, self.school.name)
+        return "{} {}".format(self.firstName, self.lastName)
 
 class Event(Model):
     age = IntegerField(null=True)
@@ -107,6 +106,7 @@ class Result(Model):
     finalRank = IntegerField(null=True)
     swimmer = ForeignKeyField(Swimmer, backref = "results")
     swimmerage = IntegerField(null=True)
+    school = ForeignKeyField(School, backref = "results")
     event = ForeignKeyField(Event, backref = "results")
     seedTime = FloatField(null=True)
     divsTime = FloatField(null=True)
@@ -205,14 +205,12 @@ def getDivsInd(matchDict, currentEvent):
     swimmer = Swimmer.get_or_create(
         firstName = matchDict["firstName"].strip(),
         lastName = matchDict["lastName"].strip(),
-        defaults = {
-            "gender": currentEvent.gender,
-            "school": school[0]
-        }
+        gender = currentEvent.gender
     )
     result = Result.get_or_create(
         divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
         swimmer = swimmer[0],
+        school = school[0],
         event = currentEvent,
         seedTime = strToTime(matchDict["seedTime"]),
         divsTime = strToTime(matchDict["divsTime"]),
@@ -244,10 +242,7 @@ def updateRelayParticipant(matchDict, relay, event):
     swimmer = Swimmer.get_or_create(
         firstName = matchDict["firstname"].strip(),
         lastName = matchDict["lastname"].strip(),
-        defaults = {
-            "gender": event.gender,
-            "school": relay.school
-        }
+        gender = event.gender
     )[0]
     participant = RelayParticipant.get_or_create(
         swimmer = swimmer,
@@ -261,7 +256,8 @@ def updateCitiesInd(matchDict, currentEvent):
     #print(matchDict)
     swimmer = Swimmer.get(
         firstName = matchDict["firstName"].strip(),
-        lastName = matchDict["lastName"].strip()
+        lastName = matchDict["lastName"].strip(),
+        gender = currentEvent.gender
     )
     result = Result.get(
         swimmer = swimmer,

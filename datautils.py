@@ -1,5 +1,6 @@
 from peewee import *
-from tabulabuilder import Result, Event
+from tabulabuilder import Result, Event, Swimmer
+from tradPointOut import rankToPoints2017
 import pandas as pd
 
 def zscore(val, mean, std):
@@ -36,5 +37,67 @@ def tier1results():
 
     return df
 
+def tier2results():
+    results = (
+        Result.select(
+            Result.divsRank,
+            Result.finalRank,
+            Result.seedTime,
+            Result.divsTime,
+            Result.qualified,
+            Event.distance,
+            Event.gender,
+            Event.stroke)
+            .join_from(Result, Event)
+        .where(Result.divsRank.is_null(False))
+        .dicts()
+    )
+
+    df = pd.DataFrame(results)
+
+    df["points"] = df.apply(
+        lambda row: rankToPoints2017(row["finalRank"]),
+        axis = 1)
+
+    df["seedSpeed"] = df.apply(
+        lambda row: row["distance"]/row["seedTime"],
+        axis = 1)
+
+    df["divsSpeed"] = df.apply(
+        lambda row: row["distance"]/row["divsTime"],
+        axis = 1)
+
+    df["deltaSpeed"] = df.apply(
+        lambda row: row["divsSpeed"]-row["seedSpeed"],
+        axis = 1)
+
+    df["genderIndicator"] = df.apply(
+        lambda row: 0 if row["gender"] == "Boys" else 1,
+        axis = 1)
+
+    df["isFly"] = df.apply(
+        lambda row: 1 if row["stroke"] == "Butterfly" else 0,
+        axis = 1)
+
+    df["isBack"] = df.apply(
+        lambda row: 1 if row["stroke"] == "Backstroke" else 0,
+        axis = 1)
+
+    df["isBreast"] = df.apply(
+        lambda row: 1 if row["stroke"] == "Breaststroke" else 0,
+        axis = 1)
+
+    df["isFree"] = df.apply(
+        lambda row: 1 if row["stroke"] == "Freestyle" else 0,
+        axis = 1)
+
+    df["isIM"] = df.apply(
+        lambda row: 1 if row["stroke"] == "IM" else 0,
+        axis = 1)
+
+    return df
+
+    
+
 if __name__ == "__main__":
-    tier1results().to_csv("tier1.csv")
+    tier2results().to_csv("tier2.csv")

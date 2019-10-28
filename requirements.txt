@@ -4,3 +4,5 @@ peewee
 tabula-py
 PyPDF2
 jupyter
+seaborn
+tensorflow

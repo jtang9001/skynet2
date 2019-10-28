@@ -71,6 +71,10 @@ def tier2results():
         lambda row: row["divsSpeed"]-row["seedSpeed"],
         axis = 1)
 
+    # df["distBucket"] = df.apply(
+    #     lambda row: str(row["distance"]),
+    #     axis = 1)
+
     df["genderIndicator"] = df.apply(
         lambda row: 0 if row["gender"] == "Boys" else 1,
         axis = 1)
@@ -95,9 +99,13 @@ def tier2results():
         lambda row: 1 if row["stroke"] == "IM" else 0,
         axis = 1)
 
+    df["isQl"] = df.apply(
+        lambda row: 1 if row["qualified"] else 0,
+        axis = 1)
+
     return df
 
     
 
 if __name__ == "__main__":
-    tier2results().to_csv("tier2.csv")
+    tier2results().to_csv("tier2num.csv")

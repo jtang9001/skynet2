@@ -11,8 +11,8 @@ Pointouts system for Scona Swim Team, way overengineered
 - Swimmer age
 - Stroke of event (Discrete)
 - Distance of event
-- Seed time compared to mean/median
-- Divs time compared to mean/median
+- Seed time compared to mean/median (pct?)
+- Divs time compared to mean/median (pct?)
 
 ## Tier 3
 - Types of strokes swimmer is on overall

@@ -3,6 +3,7 @@ import tabula
 import PyPDF2
 import re
 import traceback
+import statistics
 from peewee import *
 
 regexes = {
@@ -100,6 +101,10 @@ class Event(Model):
             self.distance, 
             self.stroke,
             "Relay" if self.isRelay else "")
+
+    def getMedianAge(self):
+        self.medianage = statistics.median((result.swimmerage for result in self.results))
+        return self.medianage
 
 class Result(Model):
     divsRank = IntegerField(null=True)

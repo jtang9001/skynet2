@@ -105,7 +105,39 @@ def tier2results():
 
     return df
 
-    
+def tier3results():
+    results = (
+        Result.select(
+            Result.divsRank,
+            Result.finalRank,
+            Result.seedTime,
+            Result.divsTime,
+            Result.qualified,
+            Result.swimmerage,
+            Event.getMedianAge,
+            Event.distance,
+            Event.gender,
+            Event.stroke)
+            .join_from(Result, Event)
+        .where(Result.divsRank.is_null(False))
+        .dicts()
+    )
+
+    df = pd.DataFrame(results)
+
+    df["points"] = df.apply(
+        lambda row: rankToPoints2017(row["finalRank"]),
+        axis = 1)
+
+    df["seedSpeed"] = df.apply(
+        lambda row: row["distance"]/row["seedTime"],
+        axis = 1)
+
+    df["divsSpeed"] = df.apply(
+        lambda row: row["distance"]/row["divsTime"],
+        axis = 1)
+
+    return df
 
 if __name__ == "__main__":
-    tier2results().to_csv("tier2num.csv")
+    tier3results().to_csv("tier3.csv")

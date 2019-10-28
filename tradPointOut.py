@@ -1,14 +1,17 @@
 from peewee import *
 from tabulabuilder import School, Swimmer, Result, RelayResult
+import numpy as np
 
 def rankToPoints2017(rank):
     try:
+        if np.isnan(rank):
+            return 0
         if rank <= 5:
             return 22 - rank * 2
         else:
             return max(17 - 1 * rank, 0)
     except TypeError:
-        print("Comparison cannot be made for {}, returning 0".format(rank))
+        #print("Comparison cannot be made for {}, returning 0".format(rank))
         return 0
 
 def rankToPoints2016(rank):

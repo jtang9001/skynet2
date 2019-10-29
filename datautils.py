@@ -1,6 +1,6 @@
 from peewee import *
 from playhouse.shortcuts import model_to_dict
-from tabulabuilder import Result, Event, Swimmer, methodsWithDecorator, trackedProperty
+from tabulabuilder import Result, Event, Swimmer
 import pandas as pd
 
 def zscore(val, mean, std):
@@ -119,10 +119,6 @@ def tier3results():
         r = model_to_dict(result, recurse=False)
         event = result.event
 
-        for methodName in methodsWithDecorator(event, trackedProperty):
-            print(methodName)
-            r[methodName] = getattr(event, methodName)
-
         r["gender"] = event.gender
         r["distance"] = event.distance
         r["stroke"] = event.stroke
@@ -134,12 +130,50 @@ def tier3results():
     return df
 
 def tier4():
-    results = (
-        Result.select(
-            Result, Event
-        ).join(Event)
-        .where((Result.divsRank.is_null(False)) & (Result.seedTime.is_null(False)))
-    )
+    events = Event.select().where(~(Event.isRelay)).objects()
+    df = pd.DataFrame()
+
+    for event in events:
+        print(event)
+
+        results = event.results
+
+        resultsDf = pd.DataFrame(results.dicts())
+        means = resultsDf.mean()
+        medians = resultsDf.median()
+        variances = resultsDf.var()
+
+        resultDicts = []
+
+        for result in results.objects():
+
+            rd = model_to_dict(result, recurse=False)
+
+            rd["meanSeedTime"] = means["seedTime"]
+            rd["meanDivsTime"] = means["divsTime"]
+            rd["varSeedTime"] = variances["seedTime"]
+            rd["varDivsTime"] = variances["divsTime"]
+            rd["medianAge"] = medians["swimmerage"]
+
+            rd["gender"] = event.gender
+            rd["distance"] = event.distance
+            rd["stroke"] = event.stroke
+
+            for virtFieldName in result.virtFields:
+                if hasattr(result, virtFieldName):
+                    rd[virtFieldName] = getattr(result, virtFieldName)()
+
+            for virtFieldName in result.swimmer.virtFields:
+                if hasattr(result.swimmer, virtFieldName):
+                    rd[virtFieldName] = getattr(result.swimmer, virtFieldName)()
+
+            resultDicts.append(rd)
+
+        annotatedDf = pd.DataFrame(resultDicts)
+        df = df.append(annotatedDf, ignore_index = True)
+
+    return df
+        
 
 if __name__ == "__main__":
-    tier3results().to_csv("tier3.csv")
+    tier4().to_csv("tier4.csv")

@@ -5,9 +5,7 @@ import PyPDF2
 import re
 import traceback
 import types
-from functools import wraps
 from peewee import *
-from playhouse.hybrid import hybrid_property, hybrid_method
 
 regexes = {
     "event": re.compile(
@@ -63,28 +61,6 @@ regexes = {
         re.VERBOSE)
 }
 
-class TrackableProperty(property):
-    pass
-
-def makeTrackingDecorator(oldDecorator):
-    @wraps(oldDecorator)
-    def trackingDecorator(func):
-        R = oldDecorator(func)
-        R.tracker = trackingDecorator
-        return R
-    return trackingDecorator
-
-def methodsWithDecorator(instance, decorator):
-    for key, val in instance.__dict__.items():
-        print(key, val)
-        # method = getattr(instance, methodName)
-        # if hasattr(method, "tracker"):
-        #     print(methodName)
-        #     if method.tracker == decorator:
-        #         yield methodName
-
-trackedProperty = makeTrackingDecorator(TrackableProperty)
-
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
@@ -103,11 +79,29 @@ class Swimmer(Model):
     lastName = CharField()
     gender = CharField()
 
+
     class Meta:
         database = db
 
     def __str__(self):
         return "{} {}".format(self.firstName, self.lastName)
+
+    def lifetimeNumRelays(self):
+        relays = RelayParticipant.select().where(RelayParticipant.swimmer == self).tuples()
+        return len(relays)
+
+    def lifetimeNumEvents(self):
+        results = Result.select().where(Result.swimmer == self).tuples()
+        return len(results)
+
+    def lifetimeStrokes(self):
+        results = Result.select(Event.stroke).join(Event).where(Result.swimmer == self).dicts()
+        strokeSet = {result["stroke"] for result in results}
+        return strokeSet
+
+    
+    virtFields = ["lifetimeNumRelays", "lifetimeNumEvents", "lifetimeStrokes"]
+
 
 class Event(Model):
     age = IntegerField(null=True)
@@ -115,6 +109,8 @@ class Event(Model):
     stroke = CharField()
     gender = CharField()
     isRelay = BooleanField()
+
+
 
     class Meta:
         database = db
@@ -127,50 +123,6 @@ class Event(Model):
             self.stroke,
             "Relay" if self.isRelay else "")
 
-    @trackedProperty
-    def meanAge(self):
-        results = Result.select(Result.swimmerage).where(Result.event == self)
-        return np.mean([result.swimmerage for result in results])
-
-    @trackedProperty
-    def medianAge(self):
-        results = Result.select(Result.swimmerage).where(Result.event == self)
-        return np.median([result.swimmerage for result in results])
-
-    #@trackedProperty
-    def varAge(self):
-        results = Result.select(Result.swimmerage).where(Result.event == self)
-        return np.var([result.swimmerage for result in results])
-
-    #@trackedProperty
-    def meanSeedTime(self):
-        results = Result.select(Result.seedTime).where(Result.event == self)
-        return np.mean([result.seedTime for result in results])
-
-    #@trackedProperty
-    def medianSeedTime(self):
-        results = Result.select(Result.seedTime).where(Result.event == self)
-        return np.median([result.seedTime for result in results])
-
-    #@trackedProperty
-    def varSeedTime(self):
-        results = Result.select(Result.seedTime).where(Result.event == self)
-        return np.var([result.seedTime for result in results])
-
-    #@trackedProperty
-    def meanDivTime(self):
-        results = Result.select(Result.divsTime).where(Result.event == self)
-        return np.mean([result.divsTime for result in results])
-
-    #@trackedProperty
-    def medianDivTime(self):
-        results = Result.select(Result.divsTime).where(Result.event == self)
-        return np.median([result.divsTime for result in results])
-
-    #@trackedProperty
-    def varDivTime(self):
-        results = Result.select(Result.divsTime).where(Result.event == self)
-        return np.var([result.divsTime for result in results])
         
 
 class Result(Model):
@@ -186,6 +138,7 @@ class Result(Model):
     qualified = BooleanField()
     year = IntegerField()
 
+
     class Meta:
         database = db
     
@@ -195,18 +148,53 @@ class Result(Model):
             self.swimmer,
             self.divsTime, self.finalTime)
 
-    @trackedProperty
+    
     def points(self):
         from tradPointOut import rankToPoints2017
         return rankToPoints2017(self.finalRank)
 
-    @trackedProperty
+    
     def seedSpeed(self):
-        return self.event.distance / self.seedTime
+        try:
+            return self.event.distance / self.seedTime
+        except TypeError:
+            return None
 
-    @trackedProperty
+    
     def divsSpeed(self):
-        return self.event.distance / self.divsTime
+        try:
+            return self.event.distance / self.divsTime
+        except TypeError:
+            return None
+
+    def numRelays(self):
+        relays = (
+            RelayParticipant.select(RelayParticipant.swimmer)
+            .join(RelayResult)
+            .where((RelayParticipant.swimmer == self.swimmer) & (RelayResult.year == self.year))
+            .tuples()
+        )
+        return len(relays)
+
+    def numEvents(self):
+        results = (
+            Result.select(Result.swimmer)
+            .where((Result.swimmer == self.swimmer) & (Result.year == self.year))
+            .tuples()
+        )
+        return len(results)
+
+    def strokes(self):
+        results = (
+            Result.select(Event.stroke).join(Event).
+            where((Result.swimmer == self.swimmer) & (Result.year == self.year))
+            .dicts()
+        )
+        strokeSet = {result["stroke"] for result in results}
+        return strokeSet
+
+    
+    virtFields = ["points", "seedSpeed", "divsSpeed", "numRelays", "numEvents", "strokes"]
 
 
 class RelayResult(Model):

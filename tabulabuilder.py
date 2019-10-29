@@ -1,10 +1,13 @@
 import pandas as pd
+import numpy as np
 import tabula
 import PyPDF2
 import re
 import traceback
-import statistics
+import types
+from functools import wraps
 from peewee import *
+from playhouse.hybrid import hybrid_property, hybrid_method
 
 regexes = {
     "event": re.compile(
@@ -60,6 +63,28 @@ regexes = {
         re.VERBOSE)
 }
 
+class TrackableProperty(property):
+    pass
+
+def makeTrackingDecorator(oldDecorator):
+    @wraps(oldDecorator)
+    def trackingDecorator(func):
+        R = oldDecorator(func)
+        R.tracker = trackingDecorator
+        return R
+    return trackingDecorator
+
+def methodsWithDecorator(instance, decorator):
+    for key, val in instance.__dict__.items():
+        print(key, val)
+        # method = getattr(instance, methodName)
+        # if hasattr(method, "tracker"):
+        #     print(methodName)
+        #     if method.tracker == decorator:
+        #         yield methodName
+
+trackedProperty = makeTrackingDecorator(TrackableProperty)
+
 db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
@@ -102,9 +127,51 @@ class Event(Model):
             self.stroke,
             "Relay" if self.isRelay else "")
 
-    def getMedianAge(self):
-        self.medianage = statistics.median((result.swimmerage for result in self.results))
-        return self.medianage
+    @trackedProperty
+    def meanAge(self):
+        results = Result.select(Result.swimmerage).where(Result.event == self)
+        return np.mean([result.swimmerage for result in results])
+
+    @trackedProperty
+    def medianAge(self):
+        results = Result.select(Result.swimmerage).where(Result.event == self)
+        return np.median([result.swimmerage for result in results])
+
+    #@trackedProperty
+    def varAge(self):
+        results = Result.select(Result.swimmerage).where(Result.event == self)
+        return np.var([result.swimmerage for result in results])
+
+    #@trackedProperty
+    def meanSeedTime(self):
+        results = Result.select(Result.seedTime).where(Result.event == self)
+        return np.mean([result.seedTime for result in results])
+
+    #@trackedProperty
+    def medianSeedTime(self):
+        results = Result.select(Result.seedTime).where(Result.event == self)
+        return np.median([result.seedTime for result in results])
+
+    #@trackedProperty
+    def varSeedTime(self):
+        results = Result.select(Result.seedTime).where(Result.event == self)
+        return np.var([result.seedTime for result in results])
+
+    #@trackedProperty
+    def meanDivTime(self):
+        results = Result.select(Result.divsTime).where(Result.event == self)
+        return np.mean([result.divsTime for result in results])
+
+    #@trackedProperty
+    def medianDivTime(self):
+        results = Result.select(Result.divsTime).where(Result.event == self)
+        return np.median([result.divsTime for result in results])
+
+    #@trackedProperty
+    def varDivTime(self):
+        results = Result.select(Result.divsTime).where(Result.event == self)
+        return np.var([result.divsTime for result in results])
+        
 
 class Result(Model):
     divsRank = IntegerField(null=True)
@@ -127,6 +194,20 @@ class Result(Model):
             self.divsRank, self.finalRank, 
             self.swimmer,
             self.divsTime, self.finalTime)
+
+    @trackedProperty
+    def points(self):
+        from tradPointOut import rankToPoints2017
+        return rankToPoints2017(self.finalRank)
+
+    @trackedProperty
+    def seedSpeed(self):
+        return self.event.distance / self.seedTime
+
+    @trackedProperty
+    def divsSpeed(self):
+        return self.event.distance / self.divsTime
+
 
 class RelayResult(Model):
     divsRank = IntegerField(null=True)
@@ -256,7 +337,6 @@ def updateRelayParticipant(matchDict, relay, event):
         age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None
     )
 
-
 def updateCitiesInd(matchDict, currentEvent):
     #print(matchDict)
     swimmer = Swimmer.get(
@@ -340,6 +420,7 @@ def readPDFtoDB(pdfObj, filename):
 
 
 if __name__ == "__main__":
+    input("Confirm you want to rewrite DB!")
     YEAR = 2018
     filename = "data/{} cities.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)

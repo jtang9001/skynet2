@@ -1,6 +1,6 @@
 from peewee import *
-from tabulabuilder import Result, Event, Swimmer
-from tradPointOut import rankToPoints2017
+from playhouse.shortcuts import model_to_dict
+from tabulabuilder import Result, Event, Swimmer, methodsWithDecorator, trackedProperty
 import pandas as pd
 
 def zscore(val, mean, std):
@@ -55,9 +55,9 @@ def tier2results():
 
     df = pd.DataFrame(results)
 
-    df["points"] = df.apply(
-        lambda row: rankToPoints2017(row["finalRank"]),
-        axis = 1)
+    # df["points"] = df.apply(
+    #     lambda row: rankToPoints2017(row["finalRank"]),
+    #     axis = 1)
 
     df["seedSpeed"] = df.apply(
         lambda row: row["distance"]/row["seedTime"],
@@ -108,36 +108,38 @@ def tier2results():
 def tier3results():
     results = (
         Result.select(
-            Result.divsRank,
-            Result.finalRank,
-            Result.seedTime,
-            Result.divsTime,
-            Result.qualified,
-            Result.swimmerage,
-            Event.getMedianAge,
-            Event.distance,
-            Event.gender,
-            Event.stroke)
-            .join_from(Result, Event)
-        .where(Result.divsRank.is_null(False))
-        .dicts()
+            Result, Event
+        ).join(Event)
+        .where((Result.divsRank.is_null(False)) & (Result.seedTime.is_null(False)))
     )
 
-    df = pd.DataFrame(results)
+    dfData = []
 
-    df["points"] = df.apply(
-        lambda row: rankToPoints2017(row["finalRank"]),
-        axis = 1)
+    for result in results.objects():
+        r = model_to_dict(result, recurse=False)
+        event = result.event
 
-    df["seedSpeed"] = df.apply(
-        lambda row: row["distance"]/row["seedTime"],
-        axis = 1)
+        for methodName in methodsWithDecorator(event, trackedProperty):
+            print(methodName)
+            r[methodName] = getattr(event, methodName)
 
-    df["divsSpeed"] = df.apply(
-        lambda row: row["distance"]/row["divsTime"],
-        axis = 1)
+        r["gender"] = event.gender
+        r["distance"] = event.distance
+        r["stroke"] = event.stroke
+        r["points"] = result.points
+        dfData.append(r)
+
+    df = pd.DataFrame(dfData)
 
     return df
+
+def tier4():
+    results = (
+        Result.select(
+            Result, Event
+        ).join(Event)
+        .where((Result.divsRank.is_null(False)) & (Result.seedTime.is_null(False)))
+    )
 
 if __name__ == "__main__":
     tier3results().to_csv("tier3.csv")

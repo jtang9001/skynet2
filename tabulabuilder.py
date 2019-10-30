@@ -194,7 +194,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "seedSpeed", "divsSpeed", "numRelays", "numEvents"]
+    virtFields = ["points", "divsSpeed"]
 
 
 class RelayResult(Model):
@@ -217,6 +217,19 @@ class RelayResult(Model):
             self.divsRank, self.finalRank, 
             self.school.name, self.designation,
             self.divsTime, self.finalTime)
+
+    def points(self):
+        from tradPointOut import rankToPoints2017
+        return rankToPoints2017(self.finalRank)
+
+    def divsSpeed(self):
+        try:
+            return self.event.distance / self.divsTime
+        except TypeError:
+            return None
+
+    virtFields = ["points", "divsSpeed"]
+
 
 class RelayParticipant(Model):
     swimmer = ForeignKeyField(Swimmer, backref = "relays")

@@ -194,7 +194,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "divsSpeed"]
+    virtFields = ["points", "divsSpeed", "numRelays", "numEvents"]
 
 
 class RelayResult(Model):
@@ -228,7 +228,30 @@ class RelayResult(Model):
         except TypeError:
             return None
 
-    virtFields = ["points", "divsSpeed"]
+    def numRelays(self):
+        numRelaysList = []
+        for swimmer in Swimmer.select().join(RelayParticipant).where(RelayParticipant.relay == self):
+            query = (
+                RelayParticipant.select(RelayParticipant.swimmer)
+                .join(RelayResult)
+                .where((RelayParticipant.swimmer == swimmer) & (RelayResult.year == self.year))
+                .tuples()
+                )
+            numRelaysList.append(len(query))
+        return np.mean(numRelaysList)
+
+    def numEvents(self):
+        numEventsList = []
+        for swimmer in Swimmer.select().join(RelayParticipant).where(RelayParticipant.relay == self):
+            query = (
+                Result.select(Result.swimmer)
+                .where((Result.swimmer == swimmer) & (Result.year == self.year))
+                .tuples()
+                )
+            numEventsList.append(len(query))
+        return np.mean(numEventsList)
+
+    virtFields = ["points", "divsSpeed", "numRelays", "numEvents"]
 
 
 class RelayParticipant(Model):

@@ -148,9 +148,10 @@ def tier4():
                 if hasattr(result, virtFieldName):
                     rd[virtFieldName] = getattr(result, virtFieldName)()
 
-            # rd["gender"] = event.gender
-            # rd["distance"] = event.distance
-            # rd["stroke"] = event.stroke
+            rd["gender"] = event.gender
+            rd["distance"] = event.distance
+            rd["stroke"] = event.stroke
+            rd["isRelay"] = event.isRelay
             
             resultDicts.append(rd)
 
@@ -179,9 +180,9 @@ def tier4():
         for col in colsToNorm:
             resultsDf[f"normed_{col}"] = (resultsDf[col] - means[col])/stds[col]
 
-        # resultsDf["normed_numRelays"] = resultsDf["numRelays"] / 2
-        # resultsDf["normed_numEvents"] = resultsDf["numEvents"] / 2
-        # resultsDf["normed_distance"] = resultsDf["distance"] / 200
+        resultsDf["normed_numRelays"] = resultsDf["numRelays"] / 2
+        resultsDf["normed_numEvents"] = resultsDf["numEvents"] / 2
+        resultsDf["normed_distance"] = resultsDf["distance"] / 200
         resultsDf["clipped_divsRank"] = resultsDf["divsRank"].clip(upper = 24)
 
         df = df.append(resultsDf, ignore_index = True, sort = False)
@@ -192,4 +193,4 @@ def tier4():
         
 
 if __name__ == "__main__":
-    tier4().to_csv("tier5.csv", index=False)
+    tier4().to_csv("tier6.csv", index=False)

@@ -138,42 +138,50 @@ def tier4():
 
         results = event.results
 
-        resultsDf = pd.DataFrame(results.dicts())
-        means = resultsDf.mean()
-        medians = resultsDf.median()
-        variances = resultsDf.var()
-
         resultDicts = []
-
         for result in results.objects():
-
             rd = model_to_dict(result, recurse=False)
-
-            rd["meanSeedTime"] = means["seedTime"]
-            rd["meanDivsTime"] = means["divsTime"]
-            rd["varSeedTime"] = variances["seedTime"]
-            rd["varDivsTime"] = variances["divsTime"]
-            rd["medianAge"] = medians["swimmerage"]
-
-            rd["gender"] = event.gender
-            rd["distance"] = event.distance
-            rd["stroke"] = event.stroke
-
             for virtFieldName in result.virtFields:
                 if hasattr(result, virtFieldName):
                     rd[virtFieldName] = getattr(result, virtFieldName)()
 
-            for virtFieldName in result.swimmer.virtFields:
-                if hasattr(result.swimmer, virtFieldName):
-                    rd[virtFieldName] = getattr(result.swimmer, virtFieldName)()
-
+            rd["gender"] = event.gender
+            rd["distance"] = event.distance
+            rd["stroke"] = event.stroke
+            
             resultDicts.append(rd)
 
-        annotatedDf = pd.DataFrame(resultDicts)
-        df = df.append(annotatedDf, ignore_index = True)
+        resultsDf = pd.DataFrame(resultDicts)
+        means = resultsDf.mean()
+
+        resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
+        resultsDf["divsTimePctOfMean"] = resultsDf["divsTime"]/means["divsTime"]
+        resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
+        resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
+        resultsDf["divsSpeedDiffFromMean"] = resultsDf["divsSpeed"] - means["divsSpeed"]
+
+        means = resultsDf.mean()
+        stds = resultsDf.std()
+
+        colsToNorm = [
+            "seedTimePctOfMean", "divsTimePctOfMean", 
+            "seedSpeedDiffFromMean", "divsSpeedDiffFromMean", 
+            "divsTimePctOfSeed", "seedSpeed", "divsSpeed"]
+
+        for col in colsToNorm:
+            resultsDf[f"normed_{col}"] = (resultsDf[col] - means[col])/stds[col]
+
+        resultsDf["normed_numRelays"] = resultsDf["numRelays"] / 2
+        resultsDf["normed_numEvents"] = resultsDf["numEvents"] / 2
+        resultsDf["normed_distance"] = resultsDf["distance"] / 200
+        resultsDf["clipped_divsRank"] = min(resultsDf["divsRank"], 24)
+
+        df = df.append(resultsDf, ignore_index = True)
+
+    df = df.drop(["swimmer", "swimmerage", "school", "event", "seedTime", "divsTime", "finalTime", "year", "id"], axis = 1)
 
     return df
         
 
 if __name__ == "__main__":
-    tier4().to_csv("tier4.csv")
+    tier4().to_csv("tier4Bmatlab.csv", index=False)

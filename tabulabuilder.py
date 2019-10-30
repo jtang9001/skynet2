@@ -100,7 +100,7 @@ class Swimmer(Model):
         return strokeSet
 
     
-    virtFields = ["lifetimeNumRelays", "lifetimeNumEvents", "lifetimeStrokes"]
+    virtFields = []
 
 
 class Event(Model):
@@ -194,7 +194,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "seedSpeed", "divsSpeed", "numRelays", "numEvents", "strokes"]
+    virtFields = ["points", "seedSpeed", "divsSpeed", "numRelays", "numEvents"]
 
 
 class RelayResult(Model):

@@ -74,6 +74,16 @@ class School(Model):
     def __str__(self):
         return self.name
 
+    def teamSize(self, year):
+        results = (
+            Result.select(Result.swimmer)
+            .where((Result.school == self) & (Result.year == year))
+            .tuples()
+        )
+        return len(set(results))
+
+    virtFields = ["teamSize"]
+
 class Swimmer(Model):
     firstName = CharField()
     lastName = CharField()
@@ -86,12 +96,21 @@ class Swimmer(Model):
     def __str__(self):
         return "{} {}".format(self.firstName, self.lastName)
 
-    def lifetimeNumRelays(self):
-        relays = RelayParticipant.select().where(RelayParticipant.swimmer == self).tuples()
+    def lifetimeNumRelays(self, year):
+        relays = (
+            RelayParticipant.select()
+            .join(RelayResult)
+            .where((RelayParticipant.swimmer == self) & (RelayResult.year <= year))
+            .tuples()
+        )
         return len(relays)
 
-    def lifetimeNumEvents(self):
-        results = Result.select().where(Result.swimmer == self).tuples()
+    def lifetimeNumEvents(self, year):
+        results = (
+            Result.select()
+            .where((Result.swimmer == self) & (Result.year <= year))
+            .tuples()
+        )
         return len(results)
 
     def lifetimeStrokes(self):
@@ -100,7 +119,7 @@ class Swimmer(Model):
         return strokeSet
 
     
-    virtFields = []
+    virtFields = ["lifetimeNumRelays", "lifetimeNumEvents"]
 
 
 class Event(Model):
@@ -194,7 +213,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "divsSpeed", "numRelays", "numEvents"]
+    virtFields = ["points", "divsSpeed", "numRelays", "numEvents", "seedSpeed"]
 
 
 class RelayResult(Model):

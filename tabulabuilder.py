@@ -142,6 +142,14 @@ class Event(Model):
             self.stroke,
             "Relay" if self.isRelay else "")
 
+    def numSwimmers(self, year):
+        return sum(1 for result in self.results if result.divsRank is not None and result.year == year)
+
+    def numQualified(self, year):
+        return sum(1 for result in self.results if result.qualified and result.year == year)
+
+    virtFields = ["numSwimmers", "numQualified"]
+
         
 
 class Result(Model):
@@ -213,7 +221,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "divsSpeed", "numRelays", "numEvents", "seedSpeed"]
+    virtFields = ["points", "divsSpeed", "numRelays"]
 
 
 class RelayResult(Model):

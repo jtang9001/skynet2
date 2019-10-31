@@ -131,6 +131,7 @@ def tier3results():
     return df
 
 def tier4():
+    _cache = {}
     events = Event.select().where(~(Event.isRelay)).objects()
     df = pd.DataFrame()
 
@@ -143,68 +144,81 @@ def tier4():
             results = event.results
 
         resultDicts = []
+
         for result in results.objects():
+            if not result.qualified:
+                continue
             rd = model_to_dict(result, recurse=False)
+
             for virtFieldName in result.virtFields:
                 if hasattr(result, virtFieldName):
                     rd[virtFieldName] = getattr(result, virtFieldName)()
 
-            for virtFieldName in result.school.virtFields:
-                if hasattr(result.school, virtFieldName):
-                    rd[virtFieldName] = getattr(result.school, virtFieldName)(result.year)
+            for virtFieldName in event.virtFields:
+                cacheKey = f"{event}{virtFieldName}{result.year}"
+                if cacheKey in _cache:
+                    rd[virtFieldName] = _cache[cacheKey]
+                elif hasattr(event, virtFieldName):
+                    rd[virtFieldName] = getattr(event, virtFieldName)(result.year)
+                    _cache[cacheKey] = rd[virtFieldName]
 
-            # for virtFieldName in result.swimmer.virtFields:
-            #     if hasattr(result.swimmer, virtFieldName):
-            #         rd[virtFieldName] = getattr(result.swimmer, virtFieldName)(result.year)
-
-            rd["gender"] = event.gender
-            rd["distance"] = event.distance
-            rd["stroke"] = event.stroke
-            
             resultDicts.append(rd)
 
         resultsDf = pd.DataFrame(resultDicts)
+
+        resultsDf["gender"] = event.gender
+        resultsDf["distance"] = event.distance
+        resultsDf["stroke"] = event.stroke
+
         means = resultsDf.mean()
 
-        resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
+        #resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
         resultsDf["divsTimePctOfMean"] = resultsDf["divsTime"]/means["divsTime"]
-        resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
-        resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
+        #resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
+        #resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
         resultsDf["divsSpeedDiffFromMean"] = resultsDf["divsSpeed"] - means["divsSpeed"]
 
         df = df.append(resultsDf, ignore_index = True, sort = False)
 
-    means = df.mean()
-    stds = df.var()
+    df = df.drop([
+        "swimmer", "school", "year", "id", "event",
+        "seedTime", "divsTime", "finalTime", "finalRank"
+    ], axis = 1)
 
-    print(means)
-    print(stds)
+    means = df.mean()
+    stds = df.std()
 
     colsToNorm = [
-        "seedTimePctOfMean", 
+        #"seedTimePctOfMean", 
         "divsTimePctOfMean", 
-        "seedSpeedDiffFromMean", 
+        #"seedSpeedDiffFromMean", 
         "divsSpeedDiffFromMean", 
-        "divsTimePctOfSeed", 
-        "seedSpeed", 
+        #"divsTimePctOfSeed", 
+        #"seedSpeed", 
         "divsSpeed",
-        "divsRank",
-        "distance",
-        "teamSize"
+        "numSwimmers",
+        "numQualified",
+        "swimmerage",
+        #"divsRank",
+        #"distance",
+        #"teamSize"
         ]
 
     for col in colsToNorm:
         df[f"normed_{col}"] = (df[col] - means[col])/stds[col]
 
     df["clipped_divsRank"] = (df["divsRank"].clip(upper = 24))/24
-    df["log_teamSize"] = np.log(df["teamSize"])
+    df["normed_numRelays"] = df["numRelays"]/2
+    #df["log_teamSize"] = np.log(df["teamSize"])
 
-        
+    means = df.mean()
+    stds = df.std()
 
-    #df = df.drop(["swimmer", "swimmerage", "school", "event", "year"], axis = 1)
+    print(means)
+    print(stds)
 
     return df
         
 
 if __name__ == "__main__":
-    tier4().to_csv("tier6ind.csv", index=False)
+    tier4().to_csv("tier6QLonly.csv", index=False)

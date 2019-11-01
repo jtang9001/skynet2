@@ -1,7 +1,8 @@
-from peewee import *
+#from peewee import *
 from playhouse.shortcuts import model_to_dict
 from tabulabuilder import Result, Event, Swimmer
 import pandas as pd
+import numpy as np
 
 def zscore(val, mean, std):
     return (val - mean) / std
@@ -130,7 +131,8 @@ def tier3results():
     return df
 
 def tier4():
-    events = Event.select().objects()
+    _cache = {}
+    events = Event.select().where(~(Event.isRelay)).objects()
     df = pd.DataFrame()
 
     for event in events:
@@ -142,55 +144,81 @@ def tier4():
             results = event.results
 
         resultDicts = []
+
         for result in results.objects():
+            # if not result.qualified:
+            #     continue
             rd = model_to_dict(result, recurse=False)
+
             for virtFieldName in result.virtFields:
                 if hasattr(result, virtFieldName):
                     rd[virtFieldName] = getattr(result, virtFieldName)()
 
-            rd["gender"] = event.gender
-            rd["distance"] = event.distance
-            rd["stroke"] = event.stroke
-            rd["isRelay"] = event.isRelay
-            
+            for virtFieldName in event.virtFields:
+                cacheKey = f"{event}{virtFieldName}{result.year}"
+                if cacheKey in _cache:
+                    rd[virtFieldName] = _cache[cacheKey]
+                elif hasattr(event, virtFieldName):
+                    rd[virtFieldName] = getattr(event, virtFieldName)(result.year)
+                    _cache[cacheKey] = rd[virtFieldName]
+
             resultDicts.append(rd)
 
         resultsDf = pd.DataFrame(resultDicts)
+
+        resultsDf["gender"] = event.gender
+        resultsDf["distance"] = event.distance
+        resultsDf["stroke"] = event.stroke
+
         means = resultsDf.mean()
 
-        # resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
+        #resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
         resultsDf["divsTimePctOfMean"] = resultsDf["divsTime"]/means["divsTime"]
-        # resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
-        # resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
-        # resultsDf["divsSpeedDiffFromMean"] = resultsDf["divsSpeed"] - means["divsSpeed"]
-
-        means = resultsDf.mean()
-        stds = resultsDf.std()
-
-        colsToNorm = [
-            # "seedTimePctOfMean", 
-            "divsTimePctOfMean", 
-            # "seedSpeedDiffFromMean", 
-            # "divsSpeedDiffFromMean", 
-            # "divsTimePctOfSeed", 
-            # "seedSpeed", 
-            "divsSpeed"
-            ]
-
-        for col in colsToNorm:
-            resultsDf[f"normed_{col}"] = (resultsDf[col] - means[col])/stds[col]
-
-        resultsDf["normed_numRelays"] = resultsDf["numRelays"] / 2
-        resultsDf["normed_numEvents"] = resultsDf["numEvents"] / 2
-        resultsDf["normed_distance"] = resultsDf["distance"] / 200
-        resultsDf["clipped_divsRank"] = resultsDf["divsRank"].clip(upper = 24)
+        #resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
+        #resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
+        resultsDf["divsSpeedDiffFromMean"] = resultsDf["divsSpeed"] - means["divsSpeed"]
 
         df = df.append(resultsDf, ignore_index = True, sort = False)
 
-    #df = df.drop(["swimmer", "swimmerage", "school", "event", "seedTime", "divsTime", "finalTime", "year", "id"], axis = 1)
+    df = df.drop([
+        "swimmer", "school", "year", "id", "event",
+        "seedTime", "divsTime", "finalTime", "finalRank"
+    ], axis = 1)
+
+    means = df.mean()
+    stds = df.std()
+
+    colsToNorm = [
+        #"seedTimePctOfMean", 
+        "divsTimePctOfMean", 
+        #"seedSpeedDiffFromMean", 
+        "divsSpeedDiffFromMean", 
+        #"divsTimePctOfSeed", 
+        #"seedSpeed", 
+        "divsSpeed",
+        "numSwimmers",
+        "numQualified",
+        "swimmerage",
+        #"divsRank",
+        #"distance",
+        #"teamSize"
+        ]
+
+    for col in colsToNorm:
+        df[f"normed_{col}"] = (df[col] - means[col])/stds[col]
+
+    df["clipped_divsRank"] = (df["divsRank"].clip(upper = 24))/24
+    df["normed_numRelays"] = df["numRelays"]/2
+    #df["log_teamSize"] = np.log(df["teamSize"])
+
+    means = df.mean()
+    stds = df.std()
+
+    print(means)
+    print(stds)
 
     return df
         
 
 if __name__ == "__main__":
-    tier4().to_csv("tier6.csv", index=False)
+    tier4().to_csv("tier6scikit.csv", index=False)

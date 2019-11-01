@@ -146,8 +146,8 @@ def tier4():
         resultDicts = []
 
         for result in results.objects():
-            if not result.qualified:
-                continue
+            # if not result.qualified:
+            #     continue
             rd = model_to_dict(result, recurse=False)
 
             for virtFieldName in result.virtFields:
@@ -221,4 +221,4 @@ def tier4():
         
 
 if __name__ == "__main__":
-    tier4().to_csv("tier6QLonly.csv", index=False)
+    tier4().to_csv("tier6scikit.csv", index=False)

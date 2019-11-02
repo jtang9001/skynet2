@@ -10,6 +10,7 @@ __pycache__/
 .Python
 .vscode/
 skynetvenv/
+*.pdf
 build/
 develop-eggs/
 dist/

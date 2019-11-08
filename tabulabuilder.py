@@ -148,7 +148,7 @@ class Event(Model):
     def numQualified(self, year):
         return sum(1 for result in self.results if result.qualified and result.year == year)
 
-    virtFields = ["numSwimmers", "numQualified"]
+    virtFields = []
 
         
 
@@ -221,7 +221,7 @@ class Result(Model):
         return strokeSet
 
     
-    virtFields = ["points", "divsSpeed", "numRelays"]
+    virtFields = ["points", "divsSpeed"]
 
 
 class RelayResult(Model):
@@ -278,7 +278,7 @@ class RelayResult(Model):
             numEventsList.append(len(query))
         return np.mean(numEventsList)
 
-    virtFields = ["points", "divsSpeed", "numRelays", "numEvents"]
+    virtFields = ["points", "divsSpeed"]
 
 
 class RelayParticipant(Model):

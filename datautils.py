@@ -219,6 +219,76 @@ def tier4():
 
     return df
         
+def tier7():
+    _cache = {}
+    events = Event.select().objects()
+    df = pd.DataFrame()
+
+    for event in events:
+        print(event)
+
+        if event.isRelay:
+            results = event.relayresults
+        else:
+            results = event.results
+
+        resultDicts = []
+
+        for result in results.objects():
+            if not result.qualified:
+                continue
+
+            rd = model_to_dict(result, recurse=False)
+
+            for virtFieldName in result.virtFields:
+                if hasattr(result, virtFieldName):
+                    rd[virtFieldName] = getattr(result, virtFieldName)()
+
+            resultDicts.append(rd)
+
+        resultsDf = pd.DataFrame(resultDicts)
+
+        resultsDf["isRelay"] = event.isRelay
+        # resultsDf["gender"] = event.gender
+        # resultsDf["distance"] = event.distance
+        # resultsDf["stroke"] = event.stroke
+
+        means = resultsDf.mean()
+
+        #resultsDf["seedTimePctOfMean"] = resultsDf["seedTime"]/means["seedTime"]
+        resultsDf["divsTimePctOfMean"] = resultsDf["divsTime"]/means["divsTime"]
+        #resultsDf["divsTimePctOfSeed"] = resultsDf["divsTime"]/resultsDf["seedTime"]
+        #resultsDf["seedSpeedDiffFromMean"] = resultsDf["seedSpeed"] - means["seedSpeed"]
+        resultsDf["divsSpeedDiffFromMean"] = resultsDf["divsSpeed"] - means["divsSpeed"]
+
+        df = df.append(resultsDf, ignore_index = True, sort = False)
+
+    df = df.drop([
+        "swimmer", "school", "year", "id", "event", "swimmerage", "qualified",
+        "seedTime", "divsTime", "finalTime", "finalRank", "designation"
+    ], axis = 1)
+
+    means = df.mean()
+    stds = df.std()
+
+    colsToNorm = [
+        "divsTimePctOfMean", 
+        "divsSpeedDiffFromMean", 
+        "divsSpeed",
+        ]
+
+    for col in colsToNorm:
+        df[f"normed_{col}"] = (df[col] - means[col])/stds[col]
+
+    df["clipped_divsRank"] = df["divsRank"].clip(upper = 24)
+
+    means = df.mean()
+    stds = df.std()
+
+    print(means)
+    print(stds)
+
+    return df
 
 if __name__ == "__main__":
-    tier4().to_csv("tier6scikit.csv", index=False)
+    tier7().to_csv("data/tier7QLonly.csv", index=False)

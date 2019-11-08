@@ -5,6 +5,6 @@ tabula-py
 PyPDF2
 jupyter
 seaborn
-tensorflow
 scikit-learn
 graphviz
+yellowbrick

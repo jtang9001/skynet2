@@ -264,21 +264,21 @@ def tier7():
         df = df.append(resultsDf, ignore_index = True, sort = False)
 
     df = df.drop([
-        "swimmer", "school", "year", "id", "event", "swimmerage", "qualified",
+        "swimmer", "id", "event", "swimmerage", "qualified",
         "seedTime", "divsTime", "finalTime", "finalRank", "designation"
     ], axis = 1)
 
-    means = df.mean()
-    stds = df.std()
+    # means = df.mean()
+    # stds = df.std()
 
-    colsToNorm = [
-        "divsTimePctOfMean", 
-        "divsSpeedDiffFromMean", 
-        "divsSpeed",
-        ]
+    # colsToNorm = [
+    #     "divsTimePctOfMean", 
+    #     "divsSpeedDiffFromMean", 
+    #     "divsSpeed",
+    #     ]
 
-    for col in colsToNorm:
-        df[f"normed_{col}"] = (df[col] - means[col])/stds[col]
+    # for col in colsToNorm:
+    #     df[f"normed_{col}"] = (df[col] - means[col])/stds[col]
 
     df["clipped_divsRank"] = df["divsRank"].clip(upper = 24)
 
@@ -291,4 +291,4 @@ def tier7():
     return df
 
 if __name__ == "__main__":
-    tier7().to_csv("data/tier7QLonly.csv", index=False)
+    tier7().to_csv("data/tier7b.csv", index=False)

@@ -291,4 +291,4 @@ def tier7():
     return df
 
 if __name__ == "__main__":
-    tier7().to_csv("data/tier7b.csv", index=False)
+    tier7().to_csv("data/tier7QLonly.csv", index=False)

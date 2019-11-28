@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("2019.db", pragmas = {
+db = SqliteDatabase("results.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -475,7 +475,7 @@ def readPDFtoDB(pdfObj, filename):
 
 
 if __name__ == "__main__":
-    #input("Confirm you want to rewrite DB!")
+    input("Confirm you want to rewrite DB!")
     YEAR = 2019
     filename = "data/{} divs.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)

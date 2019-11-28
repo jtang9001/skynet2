@@ -46,7 +46,7 @@ def getRelaysForSchool(school: School, year: int):
         & (RelayResult.finalRank.is_null(False)))
 
 if __name__ == "__main__":
-    YEAR = 2017
+    YEAR = 2019
 
     points = {}
 

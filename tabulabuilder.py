@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("results.db", pragmas = {
+db = SqliteDatabase("2019.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -342,7 +342,9 @@ def getDivsInd(matchDict, currentEvent):
     swimmer = Swimmer.get_or_create(
         firstName = matchDict["firstName"].strip(),
         lastName = matchDict["lastName"].strip(),
-        gender = currentEvent.gender
+        defaults = {
+            "gender": currentEvent.gender
+        }
     )
     result = Result.get_or_create(
         divsRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None,
@@ -379,7 +381,9 @@ def updateRelayParticipant(matchDict, relay, event):
     swimmer = Swimmer.get_or_create(
         firstName = matchDict["firstname"].strip(),
         lastName = matchDict["lastname"].strip(),
-        gender = event.gender
+        defaults = {
+            "gender": event.gender
+        }
     )[0]
     participant = RelayParticipant.get_or_create(
         swimmer = swimmer,
@@ -471,9 +475,9 @@ def readPDFtoDB(pdfObj, filename):
 
 
 if __name__ == "__main__":
-    input("Confirm you want to rewrite DB!")
-    YEAR = 2018
-    filename = "data/{} cities.pdf".format(YEAR)
+    #input("Confirm you want to rewrite DB!")
+    YEAR = 2019
+    filename = "data/{} divs.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 
     pd.set_option('display.max_colwidth', -1)

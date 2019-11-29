@@ -37,22 +37,35 @@ def getIndsForSchool(school: School, year: int):
     return Result.select().where(
         (Result.school == school) 
         & (Result.year == year) 
-        & (Result.finalRank.is_null(False)))
+        & (Result.divsRank.is_null(False))
+        & (Result.qualified == True)
+    )
 
 def getRelaysForSchool(school: School, year: int):
     return RelayResult.select().where(
         (RelayResult.school == school) 
         & (RelayResult.year == year)
-        & (RelayResult.finalRank.is_null(False)))
+        & (RelayResult.divsRank.is_null(False))
+        & (RelayResult.qualified == True)
+    )
 
 if __name__ == "__main__":
     YEAR = 2019
 
     points = {}
 
+    # db = SqliteDatabase("results.db", pragmas = {
+    #     'foreign_keys': 1,
+    #     'ignore_check_constraints': 0}
+    # )
+
+    # db.connect()
+
     for school in School.select():
-        points[school.name] = sum([rankToPoints(result.finalRank, YEAR) for result in getIndsForSchool(school, YEAR)])
-        points[school.name] += sum([rankToPoints(result.finalRank, YEAR) for result in getRelaysForSchool(school, YEAR)])
+        points[school.name] = sum([rankToPoints(result.divsRank, YEAR) for result in getIndsForSchool(school, YEAR)])
+        points[school.name] += sum([rankToPoints(result.divsRank, YEAR) for result in getRelaysForSchool(school, YEAR)])
 
     for school, pts in sorted(points.items(), key = lambda x: x[1], reverse=True):
         print(school, pts)
+
+    # db.close()

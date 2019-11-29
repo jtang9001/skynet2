@@ -235,7 +235,7 @@ def tier7():
         resultDicts = []
 
         for result in results.objects():
-            if not result.qualified:
+            if not result.qualified or result.year != 2019:
                 continue
 
             rd = model_to_dict(result, recurse=False)
@@ -291,4 +291,4 @@ def tier7():
     return df
 
 if __name__ == "__main__":
-    tier7().to_csv("data/tier7QLonly.csv", index=False)
+    tier7().to_csv("data/2019QLs.csv", index=False)

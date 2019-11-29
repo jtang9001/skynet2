@@ -94,7 +94,7 @@ class Swimmer(Model):
         database = db
 
     def __str__(self):
-        return "{} {}".format(self.firstName, self.lastName)
+        return "{}, {}".format(self.lastName, self.firstName)
 
     def lifetimeNumRelays(self, year):
         relays = (
@@ -220,8 +220,11 @@ class Result(Model):
         strokeSet = {result["stroke"] for result in results}
         return strokeSet
 
+    def swimmerName(self):
+        return str(self.swimmer)
+
     
-    virtFields = ["points", "divsSpeed"]
+    virtFields = ["divsSpeed", "swimmerName"]
 
 
 class RelayResult(Model):
@@ -278,7 +281,10 @@ class RelayResult(Model):
             numEventsList.append(len(query))
         return np.mean(numEventsList)
 
-    virtFields = ["points", "divsSpeed"]
+    def swimmerName(self):
+        return f"{self.school} - {self.designation}"
+
+    virtFields = ["divsSpeed", "swimmerName"]
 
 
 class RelayParticipant(Model):

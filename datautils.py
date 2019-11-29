@@ -235,7 +235,7 @@ def tier7():
         resultDicts = []
 
         for result in results.objects():
-            if not result.qualified or result.year != 2019:
+            if result.year != 2019 or not result.qualified:
                 continue
 
             rd = model_to_dict(result, recurse=False)
@@ -249,9 +249,10 @@ def tier7():
         resultsDf = pd.DataFrame(resultDicts)
 
         resultsDf["isRelay"] = event.isRelay
-        # resultsDf["gender"] = event.gender
-        # resultsDf["distance"] = event.distance
-        # resultsDf["stroke"] = event.stroke
+        resultsDf["event"] = str(event)
+        resultsDf["gender"] = event.gender
+        resultsDf["distance"] = event.distance
+        resultsDf["stroke"] = event.stroke
 
         means = resultsDf.mean()
 
@@ -263,10 +264,12 @@ def tier7():
 
         df = df.append(resultsDf, ignore_index = True, sort = False)
 
-    df = df.drop([
-        "swimmer", "id", "event", "swimmerage", "qualified",
-        "seedTime", "divsTime", "finalTime", "finalRank", "designation"
-    ], axis = 1)
+    # df = df.drop([
+    #     "swimmer", "id", "event", "swimmerage", "qualified",
+    #     "seedTime", "divsTime", "finalTime", "finalRank", "designation"
+    # ], axis = 1)
+
+    df = df.drop(["swimmer", "designation", "id", "finalTime", "qualified", "finalRank"], axis = 1)
 
     # means = df.mean()
     # stds = df.std()
@@ -291,4 +294,4 @@ def tier7():
     return df
 
 if __name__ == "__main__":
-    tier7().to_csv("data/2019QLs.csv", index=False)
+    tier7().to_csv("data/2019.csv", index=False)

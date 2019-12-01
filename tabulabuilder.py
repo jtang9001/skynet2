@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("results.db", pragmas = {
+db = SqliteDatabase("resultsRevised.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -88,7 +88,6 @@ class Swimmer(Model):
     firstName = CharField()
     lastName = CharField()
     gender = CharField()
-
 
     class Meta:
         database = db
@@ -121,15 +120,12 @@ class Swimmer(Model):
     
     virtFields = ["lifetimeNumRelays", "lifetimeNumEvents"]
 
-
 class Event(Model):
     age = IntegerField(null=True)
     distance = IntegerField()
     stroke = CharField()
     gender = CharField()
     isRelay = BooleanField()
-
-
 
     class Meta:
         database = db
@@ -150,8 +146,6 @@ class Event(Model):
 
     virtFields = []
 
-        
-
 class Result(Model):
     divsRank = IntegerField(null=True)
     finalRank = IntegerField(null=True)
@@ -164,7 +158,6 @@ class Result(Model):
     finalTime = FloatField(null=True)
     qualified = BooleanField()
     year = IntegerField()
-
 
     class Meta:
         database = db

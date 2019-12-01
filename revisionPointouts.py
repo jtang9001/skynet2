@@ -3,8 +3,8 @@ from tabulabuilder import Swimmer, Event, Result
 YEAR = 2019
 
 skip = [
-    {"firstName": "Emma", "lastName": "O'Croinin"},
-    {"firstName": "Sydney", "lastName": "Monilaws"}
+    {"firstName": "Emma", "lastName": "O'Croinin"}, # ID 1212
+    {"firstName": "Sydney", "lastName": "Monilaws"} # ID 1248
 ]
 
 def getResultsForName(**namekws):
@@ -14,6 +14,14 @@ def removePersonFromEvent(event, person, year = YEAR):
     try:
         replResult = event.results.where(Result.swimmer == person).objects()[0]
         rank = replResult.divsRank
+        if not replResult.qualified:
+            print("Person is not qualified in this event.")
+            return None
+        else:
+            replResult.qualified = False
+            replResult.divsRank = None
+            replResult.save()
+
     except IndexError:
         print("Probably can't find this swimmer in this event!")
         return None
@@ -36,9 +44,5 @@ if __name__ == "__main__":
     for person in skip:
         for result in getResultsForName(**person):
             print(result.event)
-            for dispResult in result.event.results.where(Result.year == YEAR):
-                print(dispResult)
             removePersonFromEvent(result.event, result.swimmer)
-            for dispResult in result.event.results.where(Result.year == YEAR):
-                print(dispResult)
 

@@ -57,6 +57,7 @@ if __name__ == "__main__":
             if rows is not None:
                 if pd.isna(rows[colName]).any():
                     print(line)
+                    rows["DivsName"] = f"{person['lastname']}, {person['firstname']}"
                     rows["Event"] = colName
                     suspDf = pd.concat([suspDf, rows])
 

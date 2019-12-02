@@ -163,10 +163,7 @@ class Result(Model):
         database = db
     
     def __str__(self):
-        return "{}->{} {} {}->{}".format(
-            self.divsRank, self.finalRank, 
-            self.swimmer,
-            self.divsTime, self.finalTime)
+        return f"{self.divsRank}\t{self.swimmer} - {self.school}\t{self.divsTime}"
 
     
     def points(self):

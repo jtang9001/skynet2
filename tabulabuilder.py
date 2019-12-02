@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("resultsRevised.db", pragmas = {
+db = SqliteDatabase("resultsC.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 

@@ -28,7 +28,7 @@ def getUnqualifiedForEvent(event):
 
 def removePersonFromEvent(event, person, year = YEAR):
     try:
-        replResult = event.results.where(Result.swimmer == person).objects()[0]
+        replResult = event.results.where((Result.swimmer == person) & (Result.year == year)).objects()[0]
         rank = replResult.divsRank
         if not replResult.qualified:
             print("Person is not qualified in this event.")
@@ -85,7 +85,8 @@ def addUnqlEvent(swimmerName, eventName, eventUnqlDict):
         for result in event.results.where((Result.year == YEAR) & (Result.qualified)):
             if result.swimmer == swimmer:
                 eventUnqlDict[event] += 1
-                print(f"{swimmer}\t{event}\t{result.school}")
+                print(f"{swimmer};{event};{result.school}")
+                removePersonFromEvent(event, swimmer)
                 return
 
 
@@ -100,7 +101,8 @@ if __name__ == "__main__":
         swimmer = getSwimmerForName(name)
         for result in swimmer.results.where((Result.year == YEAR) & (Result.qualified)).objects():
             eventUnqlCount[result.event] += 1
-            print(f"{swimmer}\t{result.event}\t{result.school}")
+            print(f"{swimmer};{result.event};{result.school}")
+            removePersonFromEvent(result.event, swimmer)
 
     nominis.apply(lambda row: addUnqlEvent(row["DivsName"], row["Event"], eventUnqlCount), axis = 1)
     
@@ -112,7 +114,8 @@ if __name__ == "__main__":
     reportDf["school"] = reportDf["school"].apply(lambda sch: School.get_by_id(int(sch)).name)
     reportDf["swimmer"] = reportDf["swimmer"].apply(lambda sch: Swimmer.get_by_id(int(sch)))
     
-    reportDf.to_csv("bumped.csv")
+    print(reportDf)
+    #reportDf.to_csv("bumped.csv")
 
 
 

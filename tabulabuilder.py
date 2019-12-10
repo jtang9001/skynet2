@@ -183,6 +183,12 @@ class Result(Model):
         except TypeError:
             return None
 
+    def finalSpeed(self):
+        try:
+            return self.event.distance / self.finalTime
+        except TypeError:
+            return None
+
     def numRelays(self):
         relays = (
             RelayParticipant.select(RelayParticipant.swimmer)
@@ -212,8 +218,7 @@ class Result(Model):
     def swimmerName(self):
         return str(self.swimmer)
 
-    
-    virtFields = ["divsSpeed", "swimmerName"]
+    virtFields = ["swimmerName", "seedSpeed", "divsSpeed", "finalSpeed"]
 
 
 class RelayResult(Model):

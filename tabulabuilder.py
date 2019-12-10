@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("resultsC.db", pragmas = {
+db = SqliteDatabase("2019.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -117,7 +117,6 @@ class Swimmer(Model):
         strokeSet = {result["stroke"] for result in results}
         return strokeSet
 
-    
     virtFields = ["lifetimeNumRelays", "lifetimeNumEvents"]
 
 class Event(Model):
@@ -390,23 +389,34 @@ def updateRelayParticipant(matchDict, relay, event):
 
 def updateCitiesInd(matchDict, currentEvent):
     #print(matchDict)
-    swimmer = Swimmer.get(
-        firstName = matchDict["firstName"].strip(),
-        lastName = matchDict["lastName"].strip(),
-        gender = currentEvent.gender
-    )
-    result = Result.get(
-        swimmer = swimmer,
-        event = currentEvent,
-        divsTime = strToTime(matchDict["divsTime"]),
-        year = YEAR
-    )
+    try:
+        swimmer = Swimmer.get(
+            firstName = matchDict["firstName"].strip(),
+            lastName = matchDict["lastName"].strip(),
+            gender = currentEvent.gender
+        )
+        result = Result.get(
+            swimmer = swimmer,
+            event = currentEvent,
+            divsTime = strToTime(matchDict["divsTime"]),
+            year = YEAR
+        )
+    except Exception:
+        traceback.print_exc()
+        return
     result.finalRank = int(matchDict["rank"]) if matchDict["rank"].isdecimal() else None
     result.finalTime = strToTime(matchDict["citiesTime"])
     result.save()
 
 def updateCitiesRelay(matchDict, currentEvent):
-    school = School.get(name = matchDict["school"].strip())
+    schoolName = matchDict["school"].strip()
+    schoolAliases = {
+        "ME LaZerte High School-AB": "M.E. LaZerte High School-AB"
+    }
+    if schoolName in schoolAliases:
+        schoolName = schoolAliases[schoolName]
+
+    school = School.get(name = schoolName)
     try:
         result = RelayResult.get(
             school = school,
@@ -473,7 +483,7 @@ def readPDFtoDB(pdfObj, filename):
 if __name__ == "__main__":
     input("Confirm you want to rewrite DB!")
     YEAR = 2019
-    filename = "data/{} divs.pdf".format(YEAR)
+    filename = "data/{} cities.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 
     pd.set_option('display.max_colwidth', -1)

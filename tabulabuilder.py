@@ -22,7 +22,7 @@ regexes = {
         (?P<lastName>[A-Za-z \-']+),\ (?P<firstName>[A-Za-z \-']+)\ + #last name, first name; spaces are escaped due to re.VERBOSE
         (?P<age>[\d]+)(.0)?\ + #age; space escaped
         (?P<school>[A-Za-z \-'()\d.]+)\ + #school name
-        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
+        #(?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ + #seed time
         (?P<divsTime>(\d+:)?\d{2}\.?\d{2}|[A-Z]{2,})\ * #divs time
         (?P<qualified>q?) #qualified indicator, possibly with some OCR noise""",
         re.VERBOSE),
@@ -31,7 +31,7 @@ regexes = {
         r'''(?P<rank>[\-\d]+)\ +
         (?P<school>[A-Za-z \-'()\d.]+)\ +
         (?P<designation>[A-F])\ +
-        (?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ +
+        #(?P<seedTime>(\d+:)?\d{2}\.\d{2}|NT)\ +
         (?P<divsTime>(\d+:)?\d{2}\.\d{2}|[A-Z]{2,})\ *
         (?P<qualified>q?)''',
         re.VERBOSE),
@@ -61,7 +61,7 @@ regexes = {
         re.VERBOSE)
 }
 
-db = SqliteDatabase("2019.db", pragmas = {
+db = SqliteDatabase("2022.db", pragmas = {
     'foreign_keys': 1,
     'ignore_check_constraints': 0})
 
@@ -351,7 +351,7 @@ def getDivsInd(matchDict, currentEvent):
         swimmer = swimmer[0],
         school = school[0],
         event = currentEvent,
-        seedTime = strToTime(matchDict["seedTime"]),
+        #seedTime = strToTime(matchDict["seedTime"]),
         divsTime = strToTime(matchDict["divsTime"]),
         defaults = {
             "swimmerage": ageMatch(int(matchDict["age"])),
@@ -368,7 +368,7 @@ def getDivsRelay(matchDict, currentEvent):
         school = school[0],
         designation = matchDict["designation"],
         event = currentEvent,
-        seedTime = strToTime(matchDict["seedTime"]),
+        #seedTime = strToTime(matchDict["seedTime"]),
         divsTime = strToTime(matchDict["divsTime"]),
         defaults = {
             "qualified": matchDict["qualified"] is not None and 'q' in matchDict["qualified"],
@@ -398,7 +398,7 @@ def updateCitiesInd(matchDict, currentEvent):
         swimmer = Swimmer.get(
             firstName = matchDict["firstName"].strip(),
             lastName = matchDict["lastName"].strip(),
-            gender = currentEvent.gender
+            # gender = currentEvent.gender
         )
         result = Result.get(
             swimmer = swimmer,
@@ -466,13 +466,6 @@ def readPDFtoDB(pdfObj, filename):
                         if linetype == "divsInd":
                             print(matchDict)
                             getDivsInd(matchDict, currentEvent)
-                        elif linetype == "divsRelayTeam":
-                            print(matchDict)
-                            currentRelay = getDivsRelay(matchDict, currentEvent)
-                        elif linetype == "relayParticipant":
-                            for match in regexes["relayParticipant"].finditer(line):
-                                print(match.groupdict())
-                                updateRelayParticipant(match.groupdict(), currentRelay, currentEvent)
 
                     elif currentEvent is not None and "cities" in filename:
                         if linetype == "citiesInd":
@@ -482,12 +475,47 @@ def readPDFtoDB(pdfObj, filename):
                             print(matchDict)
                             updateCitiesRelay(matchDict, currentEvent)
 
+    for pageNum in range(pdfObj.numPages):
+        try:
+            table = tabula.read_pdf(filename, pages=pageNum+1, guess=False)
+        except Exception:
+            traceback.print_exc()
+            continue
+
+        tableStr = table.to_string(
+            index=False, 
+            index_names=False, 
+            na_rep='', 
+            header=False
+        )
+        print(tableStr)
+        tablerows = tableStr.split('\n')
+        
+        for line in tablerows:
+            for linetype, regex in regexes.items():
+                if regex.search(line):
+                    matchDict = regex.search(line).groupdict()
+                    if linetype == "event":
+                        print(matchDict)
+                        currentEvent = getEventFromLine(line, matchDict)[0]
+
+                    elif currentEvent is not None and "divs" in filename:
+                        if linetype == "divsRelayTeam":
+                            print(matchDict)
+                            currentRelay = getDivsRelay(matchDict, currentEvent)
+                        elif linetype == "relayParticipant":
+                            for match in regexes["relayParticipant"].finditer(line):
+                                print(match.groupdict())
+                                updateRelayParticipant(match.groupdict(), currentRelay, currentEvent)
+
+
+
             
 
 
 if __name__ == "__main__":
     input("Confirm you want to rewrite DB!")
-    YEAR = 2019
+    YEAR = 2022
     filename = "data/{} cities.pdf".format(YEAR)
     pdfObj = PyPDF2.PdfFileReader(filename)
 

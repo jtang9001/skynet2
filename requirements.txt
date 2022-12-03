@@ -1,7 +1,7 @@
 numpy
 matplotlib
 peewee
-tabula-py
+tabula-py==1.4.3
 PyPDF2
 jupyter
 seaborn

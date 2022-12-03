@@ -563,7 +563,7 @@ if __name__ == "__main__":
 
     pd.set_option('display.max_colwidth', -1)
 
-    #db.connect()
+    db.connect()
     
     dfs = pd.read_excel(filename, sheet_name=None, header=0, converters={'Date': str})
     for demographic, df in dfs.items():
@@ -612,14 +612,17 @@ if __name__ == "__main__":
 
                 currTime = strToTime(val)
                 print(currEvent, currTime)
+                
+                try:
+                    result = Result.get(
+                        swimmer = currSwimmer,
+                        event = currEvent,
+                        year = YEAR
+                    )
+                    result.seedTime = currTime
+                    result.save()
+                except DoesNotExist:
+                    print("Did not swim at Divs")
 
-                result = Result.get(
-                    swimmer = currSwimmer,
-                    event = currEvent,
-                    year = YEAR
-                )
-                result.seedTime = currTime
-                result.save()
 
-
-    #db.close()
+    db.close()

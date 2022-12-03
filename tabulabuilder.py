@@ -551,78 +551,97 @@ def readPDFtoDB(pdfObj, filename):
 #     readPDFtoDB(pdfObj, filename)
 #     db.close()
 
+# Improvement printing
+if __name__ == "__main__":
+    YEAR = 2022
+
+    pd.set_option('display.max_colwidth', -1)
+
+    db.connect()
+
+    results = (
+        Result.select(Swimmer, School, Event, Result).join(Event).switch(Result).join(Swimmer).switch(Result).join(School)
+        #.where(Result.school.name == "Strathcona")
+        .dicts()
+    )
+
+    df = pd.DataFrame(results)
+    df.to_csv("data/2022_improvements.csv", index=False)
+
+    db.close()
+
 schoolMap = {
     "SCN": "Strathcona"
 }
 
 # Mini meet spreadsheet reading
-if __name__ == "__main__":
-    # input("Confirm you want to rewrite DB!")
-    YEAR = 2022
-    filename = "data/{} minis.xlsx".format(YEAR)
+# if __name__ == "__main__":
+#     # input("Confirm you want to rewrite DB!")
+#     YEAR = 2022
+#     filename = "data/{} minis.xlsx".format(YEAR)
 
-    pd.set_option('display.max_colwidth', -1)
+#     pd.set_option('display.max_colwidth', -1)
 
-    db.connect()
+#     db.connect()
     
-    dfs = pd.read_excel(filename, sheet_name=None, header=0, converters={'Date': str})
-    for demographic, df in dfs.items():
-        currAge = ageMatch(demographic.split()[0])
-        currGender = demographic.split()[1]
+#     dfs = pd.read_excel(filename, sheet_name=None, header=0, converters={'Date': str})
+#     for demographic, df in dfs.items():
+#         currAge = ageMatch(demographic.split()[0])
+#         currGender = demographic.split()[1]
 
-        for idx, row in df[df["School"] == "SCN"].iterrows():
-            currSchool = schoolMap[row.pop("School")]
-            currName = row.pop("Name")
-            currLastName = currName.split(", ")[0]
-            currFirstName = currName.split(", ")[1]
+#         for idx, row in df[df["School"] == "SCN"].iterrows():
+#             currSchool = schoolMap[row.pop("School")]
+#             currName = row.pop("Name")
+#             currLastName = currName.split(", ")[0]
+#             currFirstName = currName.split(", ")[1]
             
-            try:
-                currSwimmer = Swimmer.get(
-                    lastName = currLastName.strip(),
-                    firstName = currFirstName.strip()
-                )
-            except Exception:
-                traceback.print_exc()
-                print("!!")
+#             try:
+#                 currSwimmer = Swimmer.get(
+#                     lastName = currLastName.strip(),
+#                     firstName = currFirstName.strip()
+#                 )
+#             except Exception:
+#                 traceback.print_exc()
+#                 print("!!")
                 
-            print(currLastName, currFirstName)
-            for header, val in row[row.notna()].items():
-                if header.split()[0] in strokeMap:
-                    currStroke = strokeMap[header.split()[0]]
-                else:
-                    currStroke = header.split()[0]
+#             print(currLastName, currFirstName)
+#             for header, val in row[row.notna()].items():
+#                 if header.split()[0] in strokeMap:
+#                     currStroke = strokeMap[header.split()[0]]
+#                 else:
+#                     currStroke = header.split()[0]
 
-                currDist = header.split()[1].strip('m')
-                try:
-                    currEvent = Event.get(
-                        gender = currGender,
-                        stroke = currStroke,
-                        isRelay = False,
-                        age = currAge,
-                        distance = currDist
-                    )
-                except DoesNotExist:
-                    currEvent = Event.get(
-                        gender = currGender,
-                        stroke = currStroke,
-                        isRelay = False,
-                        age = None,
-                        distance = currDist
-                    )
+#                 currDist = header.split()[1].strip('m')
+#                 try:
+#                     currEvent = Event.get(
+#                         gender = currGender,
+#                         stroke = currStroke,
+#                         isRelay = False,
+#                         age = currAge,
+#                         distance = currDist
+#                     )
+#                 except DoesNotExist:
+#                     currEvent = Event.get(
+#                         gender = currGender,
+#                         stroke = currStroke,
+#                         isRelay = False,
+#                         age = None,
+#                         distance = currDist
+#                     )
 
-                currTime = strToTime(val)
-                print(currEvent, currTime)
+#                 currTime = strToTime(val)
+#                 print(currEvent, currTime)
                 
-                try:
-                    result = Result.get(
-                        swimmer = currSwimmer,
-                        event = currEvent,
-                        year = YEAR
-                    )
-                    result.seedTime = currTime
-                    result.save()
-                except DoesNotExist:
-                    print("Did not swim at Divs")
+#                 try:
+#                     result = Result.get(
+#                         swimmer = currSwimmer,
+#                         event = currEvent,
+#                         year = YEAR
+#                     )
+#                     result.seedTime = currTime
+#                     result.save()
+#                 except DoesNotExist:
+#                     print("Did not swim at Divs")
 
 
-    db.close()
+#     db.close()

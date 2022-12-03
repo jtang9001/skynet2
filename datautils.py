@@ -38,6 +38,40 @@ def tier1results():
 
     return df
 
+def improvement():
+    results = (
+        Result.select(
+            Swimmer.firstName,
+            Swimmer.lastName,
+            Event.distance,
+            Event.stroke,
+            Event.age,
+            Event.gender,
+            Result.divsRank, 
+            Result.finalRank, 
+            Result.seedTime, 
+            Result.divsTime, 
+            Result.finalTime
+        ).join(Event, Swimmer)
+        .where(Result.finalRank.is_null(False))
+        .dicts()
+    )
+
+    df = pd.DataFrame(results)
+    df["improvement"] = df.apply(
+        lambda row: normImprovement(row["seedTime"], row["divsTime"], row["distance"]),
+        axis = 1)
+
+    improveMean = df.mean(axis=0)["improvement"]
+    improveStd = df.std(axis=0)["improvement"]
+
+    df["improveZscore"] = df.apply(
+        lambda row: zscore(row["improvement"], improveMean, improveStd),
+        axis = 1
+    )
+
+    return df
+
 def tier2results():
     results = (
         Result.select(
@@ -294,4 +328,4 @@ def tier7():
     return df
 
 if __name__ == "__main__":
-    tier7().to_csv("data/2019c.csv", index=False)
+    tier1results().to_csv("data/2022_improvements.csv", index=False)

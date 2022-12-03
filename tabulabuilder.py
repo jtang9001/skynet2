@@ -317,6 +317,10 @@ def ageMatch(age: int) -> int:
     else:
         return age
 
+strokeMap = {
+    "Butter": "Butterfly"
+}
+
 def getEventFromLine(line, matchDict):
     if "Swim-off" in line:
         return None
@@ -327,10 +331,15 @@ def getEventFromLine(line, matchDict):
             dist = 200
         elif dist == 100:
             dist = 400
+
+    if matchDict["stroke"] in strokeMap:
+        fixedStroke = strokeMap[matchDict["stroke"]]
+    else:
+        fixedStroke = matchDict["stroke"]
     
     return Event.get_or_create(
         gender = matchDict["gender"],
-        stroke = matchDict["stroke"],
+        stroke = fixedStroke,
         isRelay = False if matchDict["relay"] is None else True,
         age = ageMatch(int(matchDict["age"])) if matchDict["age"].isdecimal() else None,
         distance = dist
@@ -476,6 +485,9 @@ def readPDFtoDB(pdfObj, filename):
                             updateCitiesRelay(matchDict, currentEvent)
 
     for pageNum in range(pdfObj.numPages):
+        if "cities" in filename:
+            break
+
         try:
             table = tabula.read_pdf(filename, pages=pageNum+1, guess=False)
         except Exception:

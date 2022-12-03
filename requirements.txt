@@ -9,3 +9,4 @@ scikit-learn
 graphviz
 yellowbrick
 statsmodels
+openpyxl

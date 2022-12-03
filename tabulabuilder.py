@@ -5,6 +5,7 @@ import PyPDF2
 import re
 import traceback
 import types
+import datetime
 from peewee import *
 
 regexes = {
@@ -290,10 +291,15 @@ class RelayParticipant(Model):
     class Meta:
         database = db
 
-def strToTime(s: str) -> float:
-    if ":" in s:
+def strToTime(s) -> float:
+    if type(s) == datetime.time:
+        return s.hour * 60 + s.minute + s.second/100 # hacky excel workaround :(
+    elif ":" in s:
         t = s.split(":")
-        return int(t[0]) * 60 + float(t[1])
+        if len(t) == 2:
+            return int(t[0]) * 60 + float(t[1])
+        elif len(t) == 3:
+            return int(t[0]) * 60 + int(t[1]) + int(t[2])/100
     else:
         try:
             s = float(s)
@@ -303,13 +309,16 @@ def strToTime(s: str) -> float:
             print("StrToTime Warning: no time for value", s)
             return None
 
-def ageMatch(age: int) -> int:
+def ageMatch(age) -> int:
     ageMap = {
         10: 15,
         11: 16,
         20: 16,
         21: 17,
         30: 17,
+        "Jr": 15,
+        "Int": 16,
+        "Sr": 17
     }
 
     if age in ageMap:
@@ -318,7 +327,11 @@ def ageMatch(age: int) -> int:
         return age
 
 strokeMap = {
-    "Butter": "Butterfly"
+    "Butter": "Butterfly",
+    "Fly": "Butterfly",
+    "Free": "Freestyle",
+    "Back": "Backstroke",
+    "Breast": "Breaststroke"
 }
 
 def getEventFromLine(line, matchDict):
@@ -524,16 +537,89 @@ def readPDFtoDB(pdfObj, filename):
 
             
 
+# PDF Reading
+# if __name__ == "__main__":
+#     input("Confirm you want to rewrite DB!")
+#     YEAR = 2022
+#     filename = "data/{} cities.pdf".format(YEAR)
+#     pdfObj = PyPDF2.PdfFileReader(filename)
 
+#     pd.set_option('display.max_colwidth', -1)
+
+#     db.connect()
+#     db.create_tables([School, Swimmer, Result, Event, RelayResult, RelayParticipant])
+#     readPDFtoDB(pdfObj, filename)
+#     db.close()
+
+schoolMap = {
+    "SCN": "Strathcona"
+}
+
+# Mini meet spreadsheet reading
 if __name__ == "__main__":
-    input("Confirm you want to rewrite DB!")
+    # input("Confirm you want to rewrite DB!")
     YEAR = 2022
-    filename = "data/{} cities.pdf".format(YEAR)
-    pdfObj = PyPDF2.PdfFileReader(filename)
+    filename = "data/{} minis.xlsx".format(YEAR)
 
     pd.set_option('display.max_colwidth', -1)
 
-    db.connect()
-    db.create_tables([School, Swimmer, Result, Event, RelayResult, RelayParticipant])
-    readPDFtoDB(pdfObj, filename)
-    db.close()
+    #db.connect()
+    
+    dfs = pd.read_excel(filename, sheet_name=None, header=0, converters={'Date': str})
+    for demographic, df in dfs.items():
+        currAge = ageMatch(demographic.split()[0])
+        currGender = demographic.split()[1]
+
+        for idx, row in df[df["School"] == "SCN"].iterrows():
+            currSchool = schoolMap[row.pop("School")]
+            currName = row.pop("Name")
+            currLastName = currName.split(", ")[0]
+            currFirstName = currName.split(", ")[1]
+            
+            try:
+                currSwimmer = Swimmer.get(
+                    lastName = currLastName.strip(),
+                    firstName = currFirstName.strip()
+                )
+            except Exception:
+                traceback.print_exc()
+                print("!!")
+                
+            print(currLastName, currFirstName)
+            for header, val in row[row.notna()].items():
+                if header.split()[0] in strokeMap:
+                    currStroke = strokeMap[header.split()[0]]
+                else:
+                    currStroke = header.split()[0]
+
+                currDist = header.split()[1].strip('m')
+                try:
+                    currEvent = Event.get(
+                        gender = currGender,
+                        stroke = currStroke,
+                        isRelay = False,
+                        age = currAge,
+                        distance = currDist
+                    )
+                except DoesNotExist:
+                    currEvent = Event.get(
+                        gender = currGender,
+                        stroke = currStroke,
+                        isRelay = False,
+                        age = None,
+                        distance = currDist
+                    )
+
+                currTime = strToTime(val)
+                print(currEvent, currTime)
+
+                result = Result.get(
+                    swimmer = currSwimmer,
+                    event = currEvent,
+                    year = YEAR
+                )
+                result.seedTime = currTime
+                result.save()
+
+
+    #db.close()
